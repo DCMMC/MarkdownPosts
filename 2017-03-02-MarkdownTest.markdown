@@ -2,7 +2,7 @@
 layout: post
 title:  "markdown test"
 date:   2017-03-02 10:42:06 +0800
-categories: NoImage
+categories: DCMMC
 image:
 tags: test
 comments: true
