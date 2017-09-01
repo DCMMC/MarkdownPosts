@@ -60,6 +60,7 @@ PATH=/usr/local/ruby/bin:$PATH:$HOME/bin
 
 export PATH
 export
+```
 
 Source:
 
@@ -117,7 +118,7 @@ echo "Clean old htmls"
 rm -Rf $PUBLIC_WWW*
 
 echo "build"
-/usr/local/ruby/bin/jekyll build --source $SOURCE --destination $PUBLIC_WWW --incremental
+jekyll build --source $SOURCE --destination $PUBLIC_WWW --incremental
 
 #Clean
 echo "clean3"
