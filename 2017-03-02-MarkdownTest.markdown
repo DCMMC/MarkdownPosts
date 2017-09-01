@@ -3,8 +3,8 @@ layout: post
 title:  "markdown test"
 date:   2017-03-02 10:42:06 +0800
 categories: DCMMC
-image:
-tags: test
+image: /assets/images/demo0.jpg
+tags: test markdown
 comments: true
 ---
 该文章用于展示markdown生成的格式。
