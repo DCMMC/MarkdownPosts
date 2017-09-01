@@ -117,7 +117,7 @@ echo "Clean old htmls"
 rm -Rf $PUBLIC_WWW*
 
 echo "build"
-jekyll build --source $SOURCE --destination $PUBLIC_WWW --incremental
+/usr/local/ruby/bin/jekyll build --source $SOURCE --destination $PUBLIC_WWW --incremental
 
 #Clean
 echo "clean3"
