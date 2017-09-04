@@ -1,0 +1,104 @@
+---
+layout: post        
+title:  "CentOS6搭建FTP服务记录"
+date:   2017-09-04 18:26:06 +0800
+categories: Linux   
+image:              
+tags:  Linux Log FTP  
+toc: true           
+comments: true      
+author:            
+---
+
+## 关于 VSFTP
+
+在 Linux 下搭建 FTP 服务器一般会使用 vsftpd。vsftpd 的前两个字母代表 "very secure" 。
+
+项目官网：[https://security.appspot.com/vsftpd.html](https://security.appspot.com/vsftpd.html)
+
+## 安装 VSFTP
+
+使用 yum 安装 vsftpd：
+
+```
+sudo yum install vsftpd
+```
+
+如果需要连接其他 FTP 服务器，则可以安装 FTP 客户端。
+
+```
+sudo yum install ftp
+```
+
+## 添加用户
+
+```
+adduser userftp
+passwd userftp #97294597
+```
+
+禁止用户的 ssh 登录权限，只允许 FTP 访问:
+
+```
+usermod -s /sbin/nologin userftp
+```
+
+## 配置 VSFTP
+
+打开配置文件：
+
+```
+sudo vi /etc/vsftpd/vsftpd.conf
+```
+
+关闭匿名访问：
+
+```
+anonymous_enable=NO
+```
+
+去掉 local_enable 的注释，修改为开启：
+
+```
+local_enable=YES
+```
+
+限制用户仅能访问自己的主目录：
+
+```
+chroot_local_user=YES
+```
+
+设置用户的主目录：(不设置时，默认为用户的家目录/home/userftp)
+
+```
+local_root=/home/wwwroot/ftpData
+```
+
+重启服务：
+
+```
+sudo service vsftpd restart
+```
+
+设置开机自启动：
+
+```
+chkconfig vsftpd on
+```
+
+## 连接测试
+
+```
+ftp dcmmcc.tk
+
+ftp> pwd
+Remote directory: /home/userftp
+
+ftp> quit
+221 Goodbye.
+```
+
+## 参考
+
+1. [https://segmentfault.com/a/1190000002926477](https://segmentfault.com/a/1190000002926477)
