@@ -15,6 +15,7 @@ author:
 只需要配置一下Nginx, 实现代理就可以了:
 
 具体的例子如下:
+
 ```
 server
 {
@@ -36,6 +37,7 @@ server
 	}
 }
 ```
+
 
 > P.S. 如果是二级域名 e.g. search.example.com, 记得去DNS域名解析供应商那里添加该解析记录.
 
