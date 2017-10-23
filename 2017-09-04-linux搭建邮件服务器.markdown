@@ -1,0 +1,277 @@
+---
+layout: post        
+title:  "linux搭建邮件服务器"
+date:   2017-09-04 21:34:06 +0800
+categories: Linux   
+image:              
+tags:  Linux MailServe
+toc: true           
+comments: true      
+author:            
+---
+
+# 准备工作
+
+Roundcube 需要PHP IMAP扩展支持，如果在编译PHP时没开启IMAP支持，可以用下面的方法添加扩展
+
+```
+# yum install libc-client-devel libc-client
+```
+
+安装 php-imap 扩展依赖的的廉包
+进入到php源码包 imap 扩展库路径下 如 /opt/php-5.3.12/ext/imap 执行
+
+```
+# /usr/local/php/bin/phpize 
+# ./configure --with-php-config=/usr/local/php/bin/php-config --with-kerberos --with-imap-ssl
+```
+
+检查系统配置过程中国如果提示出错，可以尝试将libc-client 库做个链接到lib 下
+
+# ln -s /usr/lib64/libc-client.so /usr/lib/libc-client.so
+# make && make install
+安装后修改 php.ini 的 extension_dir路径 ，并加入 extension=”imap.so” 扩展
+卸载系统自带的sendmail 或 postfix
+
+```
+# yum remove sendmail postfix
+```
+
+# 安装Postfix
+
+```
+yum -y install postfix
+
+```
+安装完成还需要替换系统自带的sendmail：
+
+rpm -e sendmail
+或者
+yum remove sendmail
+
+修改MTA（默认邮件传输代理）
+
+
+```
+alternatives --config mta
+```
+然后直接回车即可。
+
+
+检查一下是不是已经设置成功了。
+
+
+```
+alternatives --display mta
+```
+
+第一行可以看到mta的状态。 例如：mat - status is manual.
+
+# 安装Dovecot
+
+yum -y install dovecot
+
+# 配置Postfix
+
+编辑/etc/postfix/main.cf，可以下载下来修改，也可以使用vi进行编辑：
+
+vi /etc/postfix/main.cf
+
+```
+修改如下：
+
+# 75行: 取消注释，设置hostname
+myhostname = mail.lomu.me
+# 83行: 取消注释，设置域名
+mydomain = lomu.me
+# 99行: 取消注释
+myorigin = $mydomain
+# 116行: 修改
+inet_interfaces = all
+# 119行: 推荐ipv4，如果支持ipv6，则可以为all
+inet_protocols = ipv4
+# 164行: 添加
+mydestination = $myhostname, localhost.$mydomain, localhost, $mydomain
+# 264行: 取消注释，指定内网和本地的IP地址范围
+mynetworks = 127.0.0.0/8, 10.0.0.0/24
+# 419行: 取消注释，邮件保存目录
+home_mailbox = Maildir/
+# 571行: 添加
+smtpd_banner = $myhostname ESMTP
+
+
+# Virtual mailbox settings.
+virtual_mailbox_base = /var/vmail
+virtual_mailbox_maps = mysql:/etc/postfix/mysql_virtual_mailbox_maps.cf
+virtual_mailbox_domains = mysql:/etc/postfix/mysql_virtual_domains_maps.cf
+virtual_alias_maps = mysql:/etc/postfix/mysql_virtual_alias_maps.cf
+virtual_uid_maps = static:邮件POSTFIX用户ID
+virtual_gid_maps = static:邮件POSTFIX组ID
+virtual_transport = virtual
+# 添加到最后
+# 规定邮件最大尺寸为10M
+message_size_limit = 10485760
+# 规定收件箱最大容量为1G
+mailbox_size_limit = 1073741824
+virtual_create_maildirsize = yes
+virtual_mailbox_extended = yes
+virtual_mailbox_limit_maps = mysql:/etc/postfix/mysql_virtual_limit_maps.cf
+virtual_mailbox_limit_override = yes
+virtual_maildir_limit_message = Sorry, the user's maildir has exceeded the quota.
+virtual_overquota_bounce = yes
+
+# SASL settings
+smtpd_sasl_auth_enable = yes
+smtpd_sasl_local_domain = $mydomain
+smtpd_sasl_security_options = noanonymous
+smtpd_sasl_type = dovecot
+smtpd_sasl_path = /var/lib/dovecot/run/dovecot/auth-login
+broken_sasl_auth_clients = yes
+smtpd_recipient_restrictions = permit_mynetworks, permit_sasl_authenticated, reject_unauth_destination, reject_invalid_hostname, reject_non_fqdn_hostname, reject_non_fqdn_sender, reject_non_fqdn_recipient
+```
+
+virtual_uid_maps 和 virtual_gid_maps 改成postfix 用户的uid和gid 如果不知道ID，可用 id postfix 命令获取
+
+添加数据库查询配置文件，根据需要修改数据库用户名密码，主机名，数据库名配置信息，在后面创建MYSQL数据库，登录用户的时候需要用到。
+
+## 建立数据库别名查询配置文件
+
+vi /etc/postfix/mysql_virtual_alias_maps.cf
+
+```
+user = postfix
+password = postfixpassword
+hosts = localhost
+dbname = postfix
+table = alias
+select_field = goto
+where_field = address
+additional_conditions = and active = '1'
+#query = SELECT goto FROM alias WHERE address='%s' AND active = '1'
+```
+
+## 建立数据库虚拟域查询配置文件
+
+vi /etc/postfix/mysql_virtual_domains_maps.cf
+
+```
+user = postfix
+password = postfixpassword
+hosts = localhost
+dbname = postfix
+table = domain
+select_field = domain
+where_field = domain
+additional_conditions = and active = '1'
+#query = SELECT domain FROM domain WHERE domain='%s' AND active = '1'
+```
+
+## 建立数据库邮箱配额查询配置文件
+
+vi /etc/postfix/mysql_virtual_mailbox_limit_maps.cf
+
+```
+user = postfix
+password = postfixpassword
+hosts = localhost
+dbname = postfix
+table = mailbox
+select_field = quota
+where_field = username
+additional_conditions = and active = '1'
+#query = SELECT quota FROM mailbox WHERE username='%s' AND active = '1'
+```
+
+## 建立数据库虚拟邮箱查询配置文件
+
+vi /etc/postfix/mysql_virtual_mailbox_maps.cf
+
+```
+user = postfix
+password = postfixpassword
+hosts = localhost
+dbname = postfix
+table = mailbox
+select_field = CONCAT(domain,'/',maildir)
+where_field = username
+additional_conditions = and active = '1'
+#query = SELECT CONCAT(domain,'/',maildir) FROM mailbox WHERE username='%s' AND active = '1'
+```
+
+修改好了之后使用/etc/rc.d/init.d/postfix start开启postfix，使用chkconfig postfix on将postfix开机启动。
+
+# 配置Dovecot
+
+修改如下：
+
+```
+[root@mail ~]# vi /etc/dovecot/dovecot.conf
+
+```
+# 20行 开启pop3 imap
+rotocols = pop3 imap
+# 26行: 如果不使用IPv6，请修改为*
+listen = *
+# At last
+# 使用postfix 用户
+default_login_user=postfix
+default_internal_user=postfix
+# 日志路径
+log_path = /var/log/dovecot.log
+log_timestamp = "%Y-%m-%d %H:%M:%S "
+# 邮件存储路径
+ssl = no 
+mail_location = maildir:/var/vmail/%d/%u
+mail_privileged_group = mail
+# postfix 用户UID
+first_valid_uid = 89
+```
+
+[root@mail ~]# vi /etc/dovecot/conf.d/10-auth.conf
+# 9行: 取消注释并修改
+disable_plaintext_auth = no
+# 97行: 添加
+auth_mechanisms = plain login
+
+[root@mail ~]# vi /etc/dovecot/conf.d/10-mail.conf
+# 30行: 取消注释并添加
+mail_location = maildir:/var/vmail/%d/%u
+
+[root@mail ~]# vi /etc/dovecot/conf.d/10-master.conf
+# 88-90行: 取消注释并添加
+# Postfix smtp验证
+unix_listener /var/spool/postfix/private/auth {
+    mode = 0666
+    user = postfix
+    group = postfix
+}
+
+建立MYSQL 配置文件，注意修改连接用户名密码，和前面的postfix配置一致
+vi /etc/dovecot/dovecot-mysql.conf
+
+```
+driver = mysql
+connect = host=localhost dbname=postfix user=postfix password=postfixpassword
+default_pass_scheme = MD5-CRYPT
+password_query = SELECT password FROM mailbox WHERE username = '%u'
+user_query = SELECT maildir, 502 AS uid, 502 AS gid FROM mailbox WHERE username = '%u'
+```
+建立邮箱文件夹,并给予postfix 用户权限
+
+```
+mkdir -pv /var/vmail
+chown -R postfix.postfix /var/vmail
+```
+
+[root@mail ~]# /etc/rc.d/init.d/dovecot start
+Starting Dovecot Imap:     [ OK ]
+
+[root@mail ~]# chkconfig dovecot on 
+```
+
+# 安装配置 Postfixadmin
+
+
+# Reference
+
+1. [http://www.cnblogs.com/chris-cp/p/4843407.html](http://www.cnblogs.com/chris-cp/p/4843407.html)

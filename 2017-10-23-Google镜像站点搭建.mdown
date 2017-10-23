@@ -1,0 +1,42 @@
+---
+layout: post        
+title:  "Nginx搭建Google镜像站点"
+date:   2017-10-23 18:51:06 +0800
+categories: Linux   
+image:              
+tags:  Linux https 
+toc: true           
+comments: true      
+author:            
+---
+
+## 就是一步
+
+只需要配置一下Nginx, 实现代理就可以了:
+
+具体的例子如下:
+```
+server
+{
+	listen 80;
+	server_name example.com;
+
+	location / {
+		proxy_pass https://www.google.com;
+		proxy_connect_timeout 120;
+		proxy_read_timeout 600;
+		proxy_send_timeout 600;
+
+		send_timeout 600;
+		proxy_redirect    off;
+		proxy_set_header X-Real-IP $remote_addr;
+		# proxy_set_header Host $host;
+
+		proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+	}
+}
+```
+
+> P.S. 如果是二级域名 e.g. search.example.com, 记得去DNS域名解析供应商那里添加该解析记录.
+
+## Reference
