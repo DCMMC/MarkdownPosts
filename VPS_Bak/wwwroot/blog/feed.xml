@@ -1,0 +1,1184 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>DCMMC | BLOG</title>
+    <description>DCMMC的博客</description>
+    <link>/</link>
+    <atom:link href="/feed.xml" rel="self" type="application/rss+xml"/>
+    <pubDate>Fri, 10 Nov 2017 13:54:25 +0800</pubDate>
+    <lastBuildDate>Fri, 10 Nov 2017 13:54:25 +0800</lastBuildDate>
+    <generator>Jekyll v3.5.2</generator>
+    
+      <item>
+        <title>Nginx搭建Google镜像站点</title>
+        <description>&lt;h2 id=&quot;就是一步&quot;&gt;就是一步&lt;/h2&gt;
+
+&lt;p&gt;只需要配置一下Nginx, 实现代理就可以了:&lt;/p&gt;
+
+&lt;p&gt;具体的例子如下:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;server
+{
+	listen 80;
+	server_name example.com;
+
+	location / {
+		proxy_pass https://www.google.com;
+		proxy_connect_timeout 120;
+		proxy_read_timeout 600;
+		proxy_send_timeout 600;
+
+		send_timeout 600;
+		proxy_redirect    off;
+		proxy_set_header X-Real-IP $remote_addr;
+		# proxy_set_header Host $host;
+
+		proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+	}
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;P.S. 如果是二级域名 e.g. search.example.com, 记得去DNS域名解析供应商那里添加该解析记录.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h2 id=&quot;reference&quot;&gt;Reference&lt;/h2&gt;
+</description>
+        <pubDate>Mon, 23 Oct 2017 18:51:06 +0800</pubDate>
+        <link>/linux/2017/10/23/Google%E9%95%9C%E5%83%8F%E7%AB%99%E7%82%B9%E6%90%AD%E5%BB%BA.html</link>
+        <guid isPermaLink="true">/linux/2017/10/23/Google%E9%95%9C%E5%83%8F%E7%AB%99%E7%82%B9%E6%90%AD%E5%BB%BA.html</guid>
+        
+        <category>Linux</category>
+        
+        <category>https</category>
+        
+        
+        <category>Linux</category>
+        
+      </item>
+    
+      <item>
+        <title>linux搭建邮件服务器</title>
+        <description>&lt;h1 id=&quot;准备工作&quot;&gt;准备工作&lt;/h1&gt;
+
+&lt;p&gt;Roundcube 需要PHP IMAP扩展支持，如果在编译PHP时没开启IMAP支持，可以用下面的方法添加扩展&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# yum install libc-client-devel libc-client
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;安装 php-imap 扩展依赖的的廉包
+进入到php源码包 imap 扩展库路径下 如 /opt/php-5.3.12/ext/imap 执行&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# /usr/local/php/bin/phpize 
+# ./configure --with-php-config=/usr/local/php/bin/php-config --with-kerberos --with-imap-ssl
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;检查系统配置过程中国如果提示出错，可以尝试将libc-client 库做个链接到lib 下&lt;/p&gt;
+
+&lt;h1 id=&quot;ln--s-usrlib64libc-clientso-usrliblibc-clientso&quot;&gt;ln -s /usr/lib64/libc-client.so /usr/lib/libc-client.so&lt;/h1&gt;
+&lt;h1 id=&quot;make--make-install&quot;&gt;make &amp;amp;&amp;amp; make install&lt;/h1&gt;
+&lt;p&gt;安装后修改 php.ini 的 extension_dir路径 ，并加入 extension=”imap.so” 扩展
+卸载系统自带的sendmail 或 postfix&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# yum remove sendmail postfix
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;h1 id=&quot;安装postfix&quot;&gt;安装Postfix&lt;/h1&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;yum -y install postfix
+
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;p&gt;安装完成还需要替换系统自带的sendmail：&lt;/p&gt;
+
+&lt;p&gt;rpm -e sendmail
+或者
+yum remove sendmail&lt;/p&gt;
+
+&lt;p&gt;修改MTA（默认邮件传输代理）&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;alternatives --config mta
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;p&gt;然后直接回车即可。&lt;/p&gt;
+
+&lt;p&gt;检查一下是不是已经设置成功了。&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;alternatives --display mta
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;第一行可以看到mta的状态。 例如：mat - status is manual.&lt;/p&gt;
+
+&lt;h1 id=&quot;安装dovecot&quot;&gt;安装Dovecot&lt;/h1&gt;
+
+&lt;p&gt;yum -y install dovecot&lt;/p&gt;
+
+&lt;h1 id=&quot;配置postfix&quot;&gt;配置Postfix&lt;/h1&gt;
+
+&lt;p&gt;编辑/etc/postfix/main.cf，可以下载下来修改，也可以使用vi进行编辑：&lt;/p&gt;
+
+&lt;p&gt;vi /etc/postfix/main.cf&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;修改如下：
+
+# 75行: 取消注释，设置hostname
+myhostname = mail.lomu.me
+# 83行: 取消注释，设置域名
+mydomain = lomu.me
+# 99行: 取消注释
+myorigin = $mydomain
+# 116行: 修改
+inet_interfaces = all
+# 119行: 推荐ipv4，如果支持ipv6，则可以为all
+inet_protocols = ipv4
+# 164行: 添加
+mydestination = $myhostname, localhost.$mydomain, localhost, $mydomain
+# 264行: 取消注释，指定内网和本地的IP地址范围
+mynetworks = 127.0.0.0/8, 10.0.0.0/24
+# 419行: 取消注释，邮件保存目录
+home_mailbox = Maildir/
+# 571行: 添加
+smtpd_banner = $myhostname ESMTP
+
+
+# Virtual mailbox settings.
+virtual_mailbox_base = /var/vmail
+virtual_mailbox_maps = mysql:/etc/postfix/mysql_virtual_mailbox_maps.cf
+virtual_mailbox_domains = mysql:/etc/postfix/mysql_virtual_domains_maps.cf
+virtual_alias_maps = mysql:/etc/postfix/mysql_virtual_alias_maps.cf
+virtual_uid_maps = static:邮件POSTFIX用户ID
+virtual_gid_maps = static:邮件POSTFIX组ID
+virtual_transport = virtual
+# 添加到最后
+# 规定邮件最大尺寸为10M
+message_size_limit = 10485760
+# 规定收件箱最大容量为1G
+mailbox_size_limit = 1073741824
+virtual_create_maildirsize = yes
+virtual_mailbox_extended = yes
+virtual_mailbox_limit_maps = mysql:/etc/postfix/mysql_virtual_limit_maps.cf
+virtual_mailbox_limit_override = yes
+virtual_maildir_limit_message = Sorry, the user's maildir has exceeded the quota.
+virtual_overquota_bounce = yes
+
+# SASL settings
+smtpd_sasl_auth_enable = yes
+smtpd_sasl_local_domain = $mydomain
+smtpd_sasl_security_options = noanonymous
+smtpd_sasl_type = dovecot
+smtpd_sasl_path = /var/lib/dovecot/run/dovecot/auth-login
+broken_sasl_auth_clients = yes
+smtpd_recipient_restrictions = permit_mynetworks, permit_sasl_authenticated, reject_unauth_destination, reject_invalid_hostname, reject_non_fqdn_hostname, reject_non_fqdn_sender, reject_non_fqdn_recipient
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;virtual_uid_maps 和 virtual_gid_maps 改成postfix 用户的uid和gid 如果不知道ID，可用 id postfix 命令获取&lt;/p&gt;
+
+&lt;p&gt;添加数据库查询配置文件，根据需要修改数据库用户名密码，主机名，数据库名配置信息，在后面创建MYSQL数据库，登录用户的时候需要用到。&lt;/p&gt;
+
+&lt;h2 id=&quot;建立数据库别名查询配置文件&quot;&gt;建立数据库别名查询配置文件&lt;/h2&gt;
+
+&lt;p&gt;vi /etc/postfix/mysql_virtual_alias_maps.cf&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;user = postfix
+password = postfixpassword
+hosts = localhost
+dbname = postfix
+table = alias
+select_field = goto
+where_field = address
+additional_conditions = and active = '1'
+#query = SELECT goto FROM alias WHERE address='%s' AND active = '1'
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;h2 id=&quot;建立数据库虚拟域查询配置文件&quot;&gt;建立数据库虚拟域查询配置文件&lt;/h2&gt;
+
+&lt;p&gt;vi /etc/postfix/mysql_virtual_domains_maps.cf&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;user = postfix
+password = postfixpassword
+hosts = localhost
+dbname = postfix
+table = domain
+select_field = domain
+where_field = domain
+additional_conditions = and active = '1'
+#query = SELECT domain FROM domain WHERE domain='%s' AND active = '1'
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;h2 id=&quot;建立数据库邮箱配额查询配置文件&quot;&gt;建立数据库邮箱配额查询配置文件&lt;/h2&gt;
+
+&lt;p&gt;vi /etc/postfix/mysql_virtual_mailbox_limit_maps.cf&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;user = postfix
+password = postfixpassword
+hosts = localhost
+dbname = postfix
+table = mailbox
+select_field = quota
+where_field = username
+additional_conditions = and active = '1'
+#query = SELECT quota FROM mailbox WHERE username='%s' AND active = '1'
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;h2 id=&quot;建立数据库虚拟邮箱查询配置文件&quot;&gt;建立数据库虚拟邮箱查询配置文件&lt;/h2&gt;
+
+&lt;p&gt;vi /etc/postfix/mysql_virtual_mailbox_maps.cf&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;user = postfix
+password = postfixpassword
+hosts = localhost
+dbname = postfix
+table = mailbox
+select_field = CONCAT(domain,'/',maildir)
+where_field = username
+additional_conditions = and active = '1'
+#query = SELECT CONCAT(domain,'/',maildir) FROM mailbox WHERE username='%s' AND active = '1'
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;修改好了之后使用/etc/rc.d/init.d/postfix start开启postfix，使用chkconfig postfix on将postfix开机启动。&lt;/p&gt;
+
+&lt;h1 id=&quot;配置dovecot&quot;&gt;配置Dovecot&lt;/h1&gt;
+
+&lt;p&gt;修改如下：&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;[root@mail ~]# vi /etc/dovecot/dovecot.conf
+
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;h1 id=&quot;20行-开启pop3-imap&quot;&gt;20行 开启pop3 imap&lt;/h1&gt;
+&lt;p&gt;rotocols = pop3 imap&lt;/p&gt;
+&lt;h1 id=&quot;26行-如果不使用ipv6请修改为&quot;&gt;26行: 如果不使用IPv6，请修改为*&lt;/h1&gt;
+&lt;p&gt;listen = *&lt;/p&gt;
+&lt;h1 id=&quot;at-last&quot;&gt;At last&lt;/h1&gt;
+&lt;h1 id=&quot;使用postfix-用户&quot;&gt;使用postfix 用户&lt;/h1&gt;
+&lt;p&gt;default_login_user=postfix
+default_internal_user=postfix&lt;/p&gt;
+&lt;h1 id=&quot;日志路径&quot;&gt;日志路径&lt;/h1&gt;
+&lt;p&gt;log_path = /var/log/dovecot.log
+log_timestamp = “%Y-%m-%d %H:%M:%S “&lt;/p&gt;
+&lt;h1 id=&quot;邮件存储路径&quot;&gt;邮件存储路径&lt;/h1&gt;
+&lt;p&gt;ssl = no 
+mail_location = maildir:/var/vmail/%d/%u
+mail_privileged_group = mail&lt;/p&gt;
+&lt;h1 id=&quot;postfix-用户uid&quot;&gt;postfix 用户UID&lt;/h1&gt;
+&lt;p&gt;first_valid_uid = 89&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;
+[root@mail ~]# vi /etc/dovecot/conf.d/10-auth.conf
+# 9行: 取消注释并修改
+disable_plaintext_auth = no
+# 97行: 添加
+auth_mechanisms = plain login
+
+[root@mail ~]# vi /etc/dovecot/conf.d/10-mail.conf
+# 30行: 取消注释并添加
+mail_location = maildir:/var/vmail/%d/%u
+
+[root@mail ~]# vi /etc/dovecot/conf.d/10-master.conf
+# 88-90行: 取消注释并添加
+# Postfix smtp验证
+unix_listener /var/spool/postfix/private/auth {
+    mode = 0666
+    user = postfix
+    group = postfix
+}
+
+建立MYSQL 配置文件，注意修改连接用户名密码，和前面的postfix配置一致
+vi /etc/dovecot/dovecot-mysql.conf
+
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;p&gt;driver = mysql
+connect = host=localhost dbname=postfix user=postfix password=postfixpassword
+default_pass_scheme = MD5-CRYPT
+password_query = SELECT password FROM mailbox WHERE username = ‘%u’
+user_query = SELECT maildir, 502 AS uid, 502 AS gid FROM mailbox WHERE username = ‘%u’&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;建立邮箱文件夹,并给予postfix 用户权限
+
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;p&gt;mkdir -pv /var/vmail
+chown -R postfix.postfix /var/vmail&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;
+[root@mail ~]# /etc/rc.d/init.d/dovecot start
+Starting Dovecot Imap:     [ OK ]
+
+[root@mail ~]# chkconfig dovecot on 
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;h1 id=&quot;安装配置-postfixadmin&quot;&gt;安装配置 Postfixadmin&lt;/h1&gt;
+
+&lt;h1 id=&quot;reference&quot;&gt;Reference&lt;/h1&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;&lt;a href=&quot;http://www.cnblogs.com/chris-cp/p/4843407.html&quot;&gt;http://www.cnblogs.com/chris-cp/p/4843407.html&lt;/a&gt;&lt;/li&gt;
+&lt;/ol&gt;
+</description>
+        <pubDate>Mon, 04 Sep 2017 21:34:06 +0800</pubDate>
+        <link>/linux/2017/09/04/linux%E6%90%AD%E5%BB%BA%E9%82%AE%E4%BB%B6%E6%9C%8D%E5%8A%A1%E5%99%A8.html</link>
+        <guid isPermaLink="true">/linux/2017/09/04/linux%E6%90%AD%E5%BB%BA%E9%82%AE%E4%BB%B6%E6%9C%8D%E5%8A%A1%E5%99%A8.html</guid>
+        
+        <category>Linux</category>
+        
+        <category>MailServe</category>
+        
+        
+        <category>Linux</category>
+        
+      </item>
+    
+      <item>
+        <title>Let’s Encrypt颁发免费多域名https证书</title>
+        <description>&lt;h2 id=&quot;install&quot;&gt;Install&lt;/h2&gt;
+
+&lt;p&gt;The thing about CentOs 6.x ( Centos 6.5, 6.6, 6.7 etc ) is it comes with Python 2.6 where as Let’s Encrypt supports Python 2.7+ only. But, installing Python 2.7 in Centos 6.x is pretty simple.&lt;/p&gt;
+
+&lt;p&gt;Installing Python 2.7 in  Centos 6.x (This step is only for Centos 6.x)&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# Install Epel Repository
+yum install epel-release
+
+# Install IUS Repository
+rpm -ivh https://rhel6.iuscommunity.org/ius-release.rpm
+
+# Install Python 2.7 and Git
+yum --enablerepo=ius install git python27 python27-devel python27-pip python27-setuptools python27-virtualenv -y
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;mv /usr/bin/python /usr/bin/python.bak # which python: /usr/bin/python
+cp /usr/bin/python2.7 /usr/bin/python
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;wget https://dl.eff.org/certbot-auto
+chmod a+x certbot-auto
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;certbot-auto accepts the same flags as certbot; it installs all of its own dependencies and updates the client code automatically.&lt;/p&gt;
+
+&lt;h2 id=&quot;get-started&quot;&gt;Get Started&lt;/h2&gt;
+
+&lt;p&gt;for example I use nginx, my OS is CentOS 6.8 and Python version is 2.6.6.&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;sudo ./path/to/certbot-auto --nginx -d dcmmcc.tk -d blog.dcmmcc.tk -d ss.dcmmcc.tk --nginx-server-root=/etc/nginx/vhost certonly
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;将启动cerbot的向导。向导会让你输入你的域名，并要求验证你对这个域名的拥有权。验证方式有两种：&lt;/p&gt;
+
+&lt;p&gt;在你当前的https服务器（必须使用443端口）上放置一个验证文件；
+向导自己开启一个临时的https服务器（此时不能有其他进程占用443端口）进行验证；
+如果一切顺利certbot将自动完成证书的颁发并且将证书和私钥放置于/etc/letsencrypt/live/&lt;你的域名&gt;下面。&lt;/你的域名&gt;&lt;/p&gt;
+
+&lt;p&gt;It will take a few minutes ( &amp;gt; 15 minutes in my host(CPU E3 with 128m RAM))&lt;/p&gt;
+
+&lt;p&gt;It will ask you to provide an email-id. Give a valid email ID you have access to. In case you lost the certificates, you can regain them using the email id. So, it is important to use a valid email ID&lt;/p&gt;
+
+&lt;p&gt;Now, it will show you the terms of service, accept it and press enter.&lt;/p&gt;
+
+&lt;p&gt;That’s it. You have retrieved the required SSL certificate and key for your domain. All we have to do is set it up in Apache.&lt;/p&gt;
+
+&lt;p&gt;注意：联系人email地址要填写真实有效的，letsencrypt会在证书在过期以前发送预告的通知邮件。 申请成功后，会显示以下Congratulations信息:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;IMPORTANT NOTES:
+ - Congratulations! Your certificate and chain have been saved at:
+   /etc/letsencrypt/live/dcmmcc.tk/fullchain.pem
+   Your key file has been saved at:
+   /etc/letsencrypt/live/dcmmcc.tk/privkey.pem
+   Your cert will expire on 2017-12-03. To obtain a new or tweaked
+   version of this certificate in the future, simply run certbot-auto
+   again. To non-interactively renew *all* of your certificates, run
+   &quot;certbot-auto renew&quot;
+ - Your account credentials have been saved in your Certbot
+   configuration directory at /etc/letsencrypt. You should make a
+   secure backup of this folder now. This configuration directory will
+   also contain certificates and private keys obtained by Certbot so
+   making regular backups of this folder is ideal.
+ - If you like Certbot, please consider supporting our work by:
+
+   Donating to ISRG / Let's Encrypt:   https://letsencrypt.org/donate
+   Donating to EFF:                    https://eff.org/donate-le
+
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;证书的保存位置在：&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;/etc/letsencrypt/live/demo.mydomain.com/
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;You can see that all the .pem files are actually symlinks. We will use the symlinks because every time we update the certificates, we don’t have to edit the configurations.&lt;/p&gt;
+
+&lt;p&gt;So, according to the letsencrypt documentation, the .pem files are as follows ( Copied from the Letsencrypt documentation without any shame 😉 )&lt;/p&gt;
+
+&lt;p&gt;privkey.pem :&lt;/p&gt;
+
+&lt;p&gt;Private key for the certificate. This must be kept secret at all times! Never share it with anyone, including Let’s Encrypt developers. You cannot put it into a safe, however – your server still needs to access this file in order for SSL/TLS to work.&lt;/p&gt;
+
+&lt;p&gt;This is what Apache needs for SSLCertificateKeyFile,&lt;/p&gt;
+
+&lt;p&gt;cert.pem :&lt;/p&gt;
+
+&lt;p&gt;Server certificate only. This is what Apache needs for SSLCertificateFile.&lt;/p&gt;
+
+&lt;p&gt;chain.pem :&lt;/p&gt;
+
+&lt;p&gt;All certificates that need to be served by the browser excluding server certificate, i.e. root and intermediate certificates only.&lt;/p&gt;
+
+&lt;p&gt;This is what Apache needs for SSLCertificateChainFile.&lt;/p&gt;
+
+&lt;p&gt;fullchain.pem :&lt;/p&gt;
+
+&lt;p&gt;All certificates, including server certificate. This is concatenation of chain.pem and cert.pem.&lt;/p&gt;
+
+&lt;h2 id=&quot;查看证书有效期的命令&quot;&gt;查看证书有效期的命令&lt;/h2&gt;
+
+&lt;p&gt;openssl x509 -noout -dates -in /etc/letsencrypt/live/[demo.mydomain.com]/cert.pem&lt;/p&gt;
+
+&lt;h2 id=&quot;设置定时任务自动更新证书&quot;&gt;设置定时任务自动更新证书&lt;/h2&gt;
+
+&lt;p&gt;letsencrypt证书的有效期是90天，但是可以用脚本去更新。&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# 更新证书
+certbot renew --dry-run 
+# 如果不需要返回的信息，可以用静默方式：
+certbot renew --quiet
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;注意：更新证书时候网站必须是能访问到的&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# 可以使用crontab定时更新，例如：
+# 每月1号5时执行执行一次更新，并重启nginx服务器
+00 05 01 * * /usr/bin/certbot renew --quiet &amp;amp;&amp;amp; /bin/systemctl restart nginx
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;h2 id=&quot;应用实例配置nginx使用证书开通https站点&quot;&gt;应用实例：配置nginx使用证书开通https站点&lt;/h2&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;生成Perfect Forward Security（PFS）键值&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;mkdir /etc/ssl/private/ -p
+cd /etc/ssl/private/
+openssl dhparam 2048 -out dhparam.pem
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;Perfect Forward Security（PFS)是个什么东西，中文翻译成&lt;code class=&quot;highlighter-rouge&quot;&gt;完美前向保密&lt;/code&gt;，一两句话也说不清楚，反正是这几年才提倡的加强安全性的技术。如果本地还没有生成这个键值，需要先执行生成的命令。&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;生成的过程还挺花时间的，喝杯咖啡歇会儿吧。&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;配置nginx站点，例如&lt;code class=&quot;highlighter-rouge&quot;&gt;/etc/nginx/conf.d/vhost/blog.conf&lt;/code&gt;，样例内容如下：&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;server {
+listen 80;
+server_name blog.dcmmcc.tk;
+rewrite ^ https://$server_name$request_uri? permanent;
+}
+server {
+  listen 443 ssl;
+  
+
+  # letsencrypt生成的文件
+  ssl_certificate /etc/letsencrypt/live/dcmmcc.tk/fullchain.pem;
+  ssl_certificate_key /etc/letsencrypt/live/dcmmcc.tk/privkey.pem;
+
+  ssl_session_timeout 1d;
+  ssl_session_cache shared:SSL:50m;
+  ssl_session_tickets on;
+
+  ssl_dhparam /etc/ssl/private/dhparam.pem;
+
+  ssl_protocols TLSv1 TLSv1.1 TLSv1.2;
+  # 一般推荐使用的ssl_ciphers值: https://wiki.mozilla.org/Security/Server_Side_TLS
+  ssl_ciphers 'ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-AES256-GCM-SHA384:DHE-RSA-AES128-GCM-SHA256:DHE-DSS-AES128-GCM-SHA256:kEDH+AESGCM:ECDHE-RSA-AES128-SHA256:ECDHE-ECDSA-AES128-SHA256:ECDHE-RSA-AES128-SHA:ECDHE-ECDSA-AES128-SHA:ECDHE-RSA-AES256-SHA384:ECDHE-ECDSA-AES256-SHA384:ECDHE-RSA-AES256-SHA:ECDHE-ECDSA-AES256-SHA:DHE-RSA-AES128-SHA256:DHE-RSA-AES128-SHA:DHE-DSS-AES128-SHA256:DHE-RSA-AES256-SHA256:DHE-DSS-AES256-SHA:DHE-RSA-AES256-SHA:AES128-GCM-SHA256:AES256-GCM-SHA384:AES128:AES256:AES:DES-CBC3-SHA:HIGH:!aNULL:!eNULL:!EXPORT:!DES:!RC4:!MD5:!PSK';
+  ssl_prefer_server_ciphers on;
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;then,&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;service nginx restart
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;if sudo service nginx restart give you something like this:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;Stopping nginx:                                            [FAILED]
+Starting nginx: nginx: [emerg] bind() to 0.0.0.0:80 failed (98: Address already in use)
+nginx: [emerg] bind() to 0.0.0.0:80 failed (98: Address already in use)
+nginx: [emerg] bind() to 0.0.0.0:80 failed (98: Address already in use)
+nginx: [emerg] bind() to 0.0.0.0:80 failed (98: Address already in use)
+nginx: [emerg] bind() to 0.0.0.0:80 failed (98: Address already in use)
+nginx: [emerg] still could not bind()
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;then kill the process manually by their port:&lt;/p&gt;
+
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;sudo fuser -k 80/tcp&lt;/code&gt; (or use whatever port you are using)&lt;/p&gt;
+
+&lt;p&gt;alternatively, kill the processes by their ID:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;ps -ef |grep nginx
+kill &amp;lt;pid&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;h2 id=&quot;reference&quot;&gt;Reference&lt;/h2&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;&lt;a href=&quot;https://digitz.org/blog/lets-encrypt-ssl-centos-7-setup/&quot;&gt;https://digitz.org/blog/lets-encrypt-ssl-centos-7-setup/&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://jayyang.win/free-lets-encrypt-multi-domain-ssl/&quot;&gt;https://jayyang.win/free-lets-encrypt-multi-domain-ssl/&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://ruby-china.org/topics/31942&quot;&gt;https://ruby-china.org/topics/31942&lt;/a&gt;&lt;/li&gt;
+&lt;/ol&gt;
+</description>
+        <pubDate>Mon, 04 Sep 2017 18:51:06 +0800</pubDate>
+        <link>/linux/2017/09/04/Let-s-Encrypt%E9%A2%81%E5%8F%91%E5%85%8D%E8%B4%B9%E5%A4%9A%E5%9F%9F%E5%90%8Dhttps%E8%AF%81%E4%B9%A6.html</link>
+        <guid isPermaLink="true">/linux/2017/09/04/Let-s-Encrypt%E9%A2%81%E5%8F%91%E5%85%8D%E8%B4%B9%E5%A4%9A%E5%9F%9F%E5%90%8Dhttps%E8%AF%81%E4%B9%A6.html</guid>
+        
+        <category>Linux</category>
+        
+        <category>https</category>
+        
+        
+        <category>Linux</category>
+        
+      </item>
+    
+      <item>
+        <title>CentOS6搭建FTP服务记录</title>
+        <description>&lt;h2 id=&quot;关于-vsftp&quot;&gt;关于 VSFTP&lt;/h2&gt;
+
+&lt;p&gt;在 Linux 下搭建 FTP 服务器一般会使用 vsftpd。vsftpd 的前两个字母代表 “very secure” 。&lt;/p&gt;
+
+&lt;p&gt;项目官网：&lt;a href=&quot;https://security.appspot.com/vsftpd.html&quot;&gt;https://security.appspot.com/vsftpd.html&lt;/a&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;安装-vsftp&quot;&gt;安装 VSFTP&lt;/h2&gt;
+
+&lt;p&gt;使用 yum 安装 vsftpd：&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;sudo yum install vsftpd
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;如果需要连接其他 FTP 服务器，则可以安装 FTP 客户端。&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;sudo yum install ftp
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;h2 id=&quot;添加用户&quot;&gt;添加用户&lt;/h2&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;adduser userftp
+passwd userftp #97294597
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;禁止用户的 ssh 登录权限，只允许 FTP 访问:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;usermod -s /sbin/nologin userftp
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;h2 id=&quot;配置-vsftp&quot;&gt;配置 VSFTP&lt;/h2&gt;
+
+&lt;p&gt;打开配置文件：&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;sudo vi /etc/vsftpd/vsftpd.conf
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;关闭匿名访问：&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;anonymous_enable=NO
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;去掉 local_enable 的注释，修改为开启：&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;local_enable=YES
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;限制用户仅能访问自己的主目录：&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;chroot_local_user=YES
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;设置用户的主目录：(不设置时，默认为用户的家目录/home/userftp)&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;local_root=/home/wwwroot/ftpData
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;重启服务：&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;sudo service vsftpd restart
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;设置开机自启动：&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;chkconfig vsftpd on
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;h2 id=&quot;连接测试&quot;&gt;连接测试&lt;/h2&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;ftp dcmmcc.tk
+
+ftp&amp;gt; pwd
+Remote directory: /home/userftp
+
+ftp&amp;gt; quit
+221 Goodbye.
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;h2 id=&quot;参考&quot;&gt;参考&lt;/h2&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;&lt;a href=&quot;https://segmentfault.com/a/1190000002926477&quot;&gt;https://segmentfault.com/a/1190000002926477&lt;/a&gt;&lt;/li&gt;
+&lt;/ol&gt;
+</description>
+        <pubDate>Mon, 04 Sep 2017 18:26:06 +0800</pubDate>
+        <link>/linux/2017/09/04/CentOS6%E6%90%AD%E5%BB%BAFTP%E6%9C%8D%E5%8A%A1%E8%AE%B0%E5%BD%95.html</link>
+        <guid isPermaLink="true">/linux/2017/09/04/CentOS6%E6%90%AD%E5%BB%BAFTP%E6%9C%8D%E5%8A%A1%E8%AE%B0%E5%BD%95.html</guid>
+        
+        <category>Linux</category>
+        
+        <category>Log</category>
+        
+        <category>FTP</category>
+        
+        
+        <category>Linux</category>
+        
+      </item>
+    
+      <item>
+        <title>Linux下Beyond Compare4的破解使用</title>
+        <description>&lt;h1 id=&quot;1官网下载最新版-beyond-compare-4-并安装&quot;&gt;1.官网下载最新版 Beyond Compare 4 并安装&lt;/h1&gt;
+
+&lt;p&gt;http://www.scootersoftware.com/download.php&lt;/p&gt;
+
+&lt;h1 id=&quot;2命令&quot;&gt;2.命令&lt;/h1&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;
+cd /usr/lib/beyondcompare/
+
+sudo sed -i &quot;s/keexjEP3t4Mue23hrnuPtY4TdcsqNiJL-5174TsUdLmJSIXKfG2NGPwBL6vnRPddT7tH29qpkneX63DO9ECSPE9rzY1zhThHERg8lHM9IBFT+rVuiY823aQJuqzxCKIE1bcDqM4wgW01FH6oCBP1G4ub01xmb4BGSUG6ZrjxWHJyNLyIlGvOhoY2HAYzEtzYGwxFZn2JZ66o4RONkXjX0DF9EzsdUef3UAS+JQ+fCYReLawdjEe6tXCv88GKaaPKWxCeaUL9PejICQgRQOLGOZtZQkLgAelrOtehxz5ANOOqCaJgy2mJLQVLM5SJ9Dli909c5ybvEhVmIC0dc9dWH+/N9KmiLVlKMU7RJqnE+WXEEPI1SgglmfmLc1yVH7dqBb9ehOoKG9UE+HAE1YvH1XX2XVGeEqYUY-Tsk7YBTz0WpSpoYyPgx6Iki5KLtQ5G-aKP9eysnkuOAkrvHU8bLbGtZteGwJarev03PhfCioJL4OSqsmQGEvDbHFEbNl1qJtdwEriR+VNZts9vNNLk7UGfeNwIiqpxjk4Mn09nmSd8FhM4ifvcaIbNCRoMPGl6KU12iseSe+w+1kFsLhX+OhQM8WXcWV10cGqBzQE9OqOLUcg9n0krrR3KrohstS9smTwEx9olyLYppvC0p5i7dAx2deWvM1ZxKNs0BvcXGukR+/g&quot; BCompare
+
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;h1 id=&quot;3此时bcompare文件已被破解打开软件会提示trial-mode-error表示成功输入team-zwt生成的密钥即可注册成功&quot;&gt;3.此时BCompare文件已被破解，打开软件会提示Trial Mode Error！表示成功，输入Team ZWT生成的密钥即可注册成功&lt;/h1&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gd&quot;&gt;--- BEGIN LICENSE KEY ---
+&lt;/span&gt;GXN1eh9FbDiX1ACdd7XKMV7hL7x0ClBJLUJ-zFfKofjaj2yxE53xauIfkqZ8FoLpcZ0Ux6McTyNmODDSvSIHLYhg1QkTxjCeSCk6ARz0ABJcnUmd3dZYJNWFyJun14rmGByRnVPL49QH+Rs0kjRGKCB-cb8IT4Gf0Ue9WMQ1A6t31MO9jmjoYUeoUmbeAQSofvuK8GN1rLRv7WXfUJ0uyvYlGLqzq1ZoJAJDyo0Kdr4ThF-IXcv2cxVyWVW1SaMq8GFosDEGThnY7C-SgNXW30jqAOgiRjKKRX9RuNeDMFqgP2cuf0NMvyMrMScnM1ZyiAaJJtzbxqN5hZOMClUTE+++
+&lt;span class=&quot;gd&quot;&gt;--- END LICENSE KEY -----
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+</description>
+        <pubDate>Fri, 01 Sep 2017 18:37:06 +0800</pubDate>
+        <link>/software/2017/09/01/Linux%E4%B8%8BBeyond-Compare4%E7%9A%84%E7%A0%B4%E8%A7%A3%E4%BD%BF%E7%94%A8.html</link>
+        <guid isPermaLink="true">/software/2017/09/01/Linux%E4%B8%8BBeyond-Compare4%E7%9A%84%E7%A0%B4%E8%A7%A3%E4%BD%BF%E7%94%A8.html</guid>
+        
+        <category>Linux</category>
+        
+        <category>Beyond-Compare-4</category>
+        
+        
+        <category>Software</category>
+        
+      </item>
+    
+      <item>
+        <title>jekyll安装笔记(Cent OS 6.8)</title>
+        <description>&lt;h1 id=&quot;centos-68-jekyll-install-note&quot;&gt;CentOS 6.8 jekyll install note&lt;/h1&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;Current user: &lt;code class=&quot;highlighter-rouge&quot;&gt;root&lt;/code&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h2 id=&quot;ruby安装&quot;&gt;Ruby安装&lt;/h2&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;删除旧版本&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;runuser -l www -s /bin/bash -c &quot;yum remove ruby ruby-devel -y&quot;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;下载源码安装&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;runuser -l www -s /bin/bash -c &quot;cd /tmp &amp;amp;&amp;amp; wget wget https://cache.ruby-lang.org/pub/ruby/2.3/ruby-2.3.1.tar.gz
+runuser -l www -s /bin/bash -c &quot;cd /tmp &amp;amp;&amp;amp; tar zxvf ruby-2.3.1.tar.gz&quot;
+cd /tmp/ruby-2.3.1
+runuser -l www -s /bin/bash -c &quot;cd /tmp/ruby-2.3.1 &amp;amp;&amp;amp; ./configure --prefix=/usr/local/ruby --with-opessl-dir=/root/soft/openssl-1.0.0l&quot;
+runuser -l www -s /bin/bash -c &quot;cd /tmp/ruby-2.3.1 &amp;amp;&amp;amp; sudo make &amp;amp;&amp;amp; sudo make install&quot;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;h2 id=&quot;add-www-to-root-group&quot;&gt;add &lt;code class=&quot;highlighter-rouge&quot;&gt;www&lt;/code&gt; to &lt;code class=&quot;highlighter-rouge&quot;&gt;root&lt;/code&gt; group&lt;/h2&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;usermod -a -G root www
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;h2 id=&quot;add-wwws-bash_profile&quot;&gt;add &lt;code class=&quot;highlighter-rouge&quot;&gt;www&lt;/code&gt;’s &lt;code class=&quot;highlighter-rouge&quot;&gt;~/.bash_profile&lt;/code&gt;&lt;/h2&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;runuser -l www -s /bin/bash -c &quot;vim ~/.bash_profile&quot;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;add:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# .bash_profile
+
+# Get the aliases and functions
+if [ -f ~/.bashrc ]; then
+	. ~/.bashrc
+fi
+
+# User specific environment and startup programs
+
+PATH=/usr/local/ruby/bin:$PATH:$HOME/bin
+
+export PATH
+export
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;Source:&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;Current user: &lt;code class=&quot;highlighter-rouge&quot;&gt;root&lt;/code&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;chmod -R 775 /usr/local/ruby/
+runuser -l www -s /bin/bash -c &quot;source ~/.bash_profile&quot;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;h2 id=&quot;rubygems安装&quot;&gt;RubyGems安装&lt;/h2&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;gem update --system
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;h2 id=&quot;jekyll安装&quot;&gt;jekyll安装&lt;/h2&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;runuser -l www -s /bin/bash -c &quot;gem install jekyll bundler&quot;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;p&gt;If could not find in any of the sources when running jekyll, try &lt;code class=&quot;highlighter-rouge&quot;&gt;bundle exec jekyll&lt;/code&gt;.&lt;/p&gt;
+
+&lt;h2 id=&quot;markdownpostsupdatehooksh&quot;&gt;MarkdownPostsUpdateHook.sh&lt;/h2&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c&quot;&gt;#!/bin/sh&lt;/span&gt;
+
+&lt;span class=&quot;c&quot;&gt;# Jekyll update hook&lt;/span&gt;
+
+&lt;span class=&quot;c&quot;&gt;#GIT_REPO=https://github.com/DCMMC/DCMMC.github.io&lt;/span&gt;
+&lt;span class=&quot;nv&quot;&gt;GIT_REPO&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;https://github.com/DCMMC/Notes
+&lt;span class=&quot;nv&quot;&gt;TMP_GIT_CLONE&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;/tmp/blog/
+&lt;span class=&quot;nv&quot;&gt;SOURCE&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;/home/wwwroot/DCMMC.github.io
+&lt;span class=&quot;c&quot;&gt;#user: Root!&lt;/span&gt;
+&lt;span class=&quot;nv&quot;&gt;PUBLIC_WWW&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;/home/wwwroot/blog/
+
+git clone &lt;span class=&quot;nv&quot;&gt;$GIT_REPO&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$TMP_GIT_CLONE&lt;/span&gt;
+
+&lt;span class=&quot;c&quot;&gt;#debug&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;#whoami&lt;/span&gt;
+
+&lt;span class=&quot;c&quot;&gt;#Clean old post&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;clean1&quot;&lt;/span&gt;
+rm -Rf &lt;span class=&quot;nv&quot;&gt;$SOURCE&lt;/span&gt;/_posts/&lt;span class=&quot;k&quot;&gt;*&lt;/span&gt;
+
+&lt;span class=&quot;c&quot;&gt;# move&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;move&quot;&lt;/span&gt;
+mv &lt;span class=&quot;nv&quot;&gt;$TMP_GIT_CLONE&lt;/span&gt;/&lt;span class=&quot;k&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$SOURCE&lt;/span&gt;/_posts/
+
+&lt;span class=&quot;c&quot;&gt;#Clean&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;clean2&quot;&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;Clean old htmls&quot;&lt;/span&gt;
+rm -Rf &lt;span class=&quot;nv&quot;&gt;$PUBLIC_WWW&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;*&lt;/span&gt;
+
+&lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;build&quot;&lt;/span&gt;
+jekyll build --source &lt;span class=&quot;nv&quot;&gt;$SOURCE&lt;/span&gt; --destination &lt;span class=&quot;nv&quot;&gt;$PUBLIC_WWW&lt;/span&gt; --incremental
+
+&lt;span class=&quot;c&quot;&gt;#Clean&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;clean3&quot;&lt;/span&gt;
+
+rm -Rf &lt;span class=&quot;nv&quot;&gt;$TMP_GIT_CLONE&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;exit&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;blog&lt;/code&gt; and &lt;code class=&quot;highlighter-rouge&quot;&gt;DCMMC.github.io/_post&lt;/code&gt; mush set 775&lt;/p&gt;
+&lt;/blockquote&gt;
+</description>
+        <pubDate>Fri, 01 Sep 2017 12:37:06 +0800</pubDate>
+        <link>/dcmmc/2017/09/01/Jekyll-Install-Note.html</link>
+        <guid isPermaLink="true">/dcmmc/2017/09/01/Jekyll-Install-Note.html</guid>
+        
+        <category>CentOS</category>
+        
+        <category>jekyll</category>
+        
+        <category>安装笔记</category>
+        
+        
+        <category>DCMMC</category>
+        
+      </item>
+    
+      <item>
+        <title>markdown test</title>
+        <description>&lt;p&gt;该文章用于展示markdown生成的格式。&lt;/p&gt;
+
+&lt;h1 id=&quot;heading-1&quot;&gt;Heading 1&lt;/h1&gt;
+
+&lt;h2 id=&quot;heading-2&quot;&gt;Heading 2&lt;/h2&gt;
+
+&lt;h3 id=&quot;heading-3&quot;&gt;Heading 3&lt;/h3&gt;
+
+&lt;h4 id=&quot;heading-4&quot;&gt;Heading 4&lt;/h4&gt;
+
+&lt;h5 id=&quot;heading-5&quot;&gt;Heading 5&lt;/h5&gt;
+
+&lt;h6 id=&quot;heading-6&quot;&gt;Heading 6&lt;/h6&gt;
+
+&lt;h4 id=&quot;标题用底线的形式heading-underline&quot;&gt;标题（用底线的形式）Heading (underline)&lt;/h4&gt;
+
+&lt;h1 id=&quot;this-is-an-h1&quot;&gt;This is an H1&lt;/h1&gt;
+
+&lt;h2 id=&quot;this-is-an-h2&quot;&gt;This is an H2&lt;/h2&gt;
+
+&lt;h3 id=&quot;字符效果和横线等&quot;&gt;字符效果和横线等&lt;/h3&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;&lt;del&gt;删除线&lt;/del&gt;&lt;/p&gt;
+
+&lt;s&gt;删除线（开启识别HTML标签时）&lt;/s&gt;
+
+&lt;p&gt;&lt;em&gt;斜体字&lt;/em&gt;      &lt;em&gt;斜体字&lt;/em&gt;
+&lt;strong&gt;粗体&lt;/strong&gt;  &lt;strong&gt;粗体&lt;/strong&gt;
+&lt;strong&gt;&lt;em&gt;粗斜体&lt;/em&gt;&lt;/strong&gt; &lt;strong&gt;&lt;em&gt;粗斜体&lt;/em&gt;&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;上标：X&lt;sub&gt;2&lt;/sub&gt;，下标：O&lt;sup&gt;2&lt;/sup&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;缩写(同HTML的abbr标签)&lt;/strong&gt;&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;即更长的单词或短语的缩写形式，前提是开启识别HTML标签时，已默认开启&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;The &lt;abbr title=&quot;Hyper Text Markup Language&quot;&gt;HTML&lt;/abbr&gt; specification is maintained by the &lt;abbr title=&quot;World Wide Web Consortium&quot;&gt;W3C&lt;/abbr&gt;.&lt;/p&gt;
+
+&lt;h3 id=&quot;引用-blockquotes&quot;&gt;引用 Blockquotes&lt;/h3&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;引用文本 Blockquotes&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;引用的行内混合 Blockquotes&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;引用：如果想要插入空白换行&lt;code class=&quot;highlighter-rouge&quot;&gt;即&amp;lt;br /&amp;gt;标签&lt;/code&gt;，在插入处先键入两个以上的空格然后回车即可，&lt;a href=&quot;http://localhost/&quot;&gt;普通链接&lt;/a&gt;。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h3 id=&quot;锚点与链接-links&quot;&gt;锚点与链接 Links&lt;/h3&gt;
+
+&lt;p&gt;&lt;a href=&quot;http://localhost/&quot;&gt;普通链接&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;http://localhost/&quot; title=&quot;普通链接带标题&quot;&gt;普通链接带标题&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;直接链接：&lt;a href=&quot;https://github.com&quot;&gt;https://github.com&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;http://www.this-anchor-link.com/&quot;&gt;锚点链接&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;GFM a-tail link @pandao&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;@pandao&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h3 id=&quot;多语言代码高亮-codes&quot;&gt;多语言代码高亮 Codes&lt;/h3&gt;
+
+&lt;h4 id=&quot;行内代码-inline-code&quot;&gt;行内代码 Inline code&lt;/h4&gt;
+
+&lt;p&gt;执行命令：&lt;code class=&quot;highlighter-rouge&quot;&gt;npm install marked&lt;/code&gt;&lt;/p&gt;
+
+&lt;h4 id=&quot;缩进风格&quot;&gt;缩进风格&lt;/h4&gt;
+
+&lt;p&gt;即缩进四个空格，也做为实现类似&lt;code class=&quot;highlighter-rouge&quot;&gt;&amp;lt;pre&amp;gt;&lt;/code&gt;预格式化文本(Preformatted Text)的功能。&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&amp;lt;?php
+    echo &quot;Hello world!&quot;;
+?&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;预格式化文本：&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;| First Header  | Second Header |
+| ------------- | ------------- |
+| Content Cell  | Content Cell  |
+| Content Cell  | Content Cell  |
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;h3 id=&quot;图片-images&quot;&gt;图片 Images&lt;/h3&gt;
+
+&lt;p&gt;图片加链接 (Image + Link)：&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/M.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;图为：我的头像&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;hr /&gt;
+
+&lt;h3 id=&quot;列表-lists&quot;&gt;列表 Lists&lt;/h3&gt;
+
+&lt;h4 id=&quot;无序列表减号unordered-lists--&quot;&gt;无序列表（减号）Unordered Lists (-)&lt;/h4&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;列表一&lt;/li&gt;
+  &lt;li&gt;列表二&lt;/li&gt;
+  &lt;li&gt;列表三&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;无序列表星号unordered-lists-&quot;&gt;无序列表（星号）Unordered Lists (*)&lt;/h4&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;列表一&lt;/li&gt;
+  &lt;li&gt;列表二&lt;/li&gt;
+  &lt;li&gt;列表三&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;无序列表加号和嵌套unordered-lists-&quot;&gt;无序列表（加号和嵌套）Unordered Lists (+)&lt;/h4&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;列表一&lt;/li&gt;
+  &lt;li&gt;列表二
+    &lt;ul&gt;
+      &lt;li&gt;列表二-1&lt;/li&gt;
+      &lt;li&gt;列表二-2&lt;/li&gt;
+      &lt;li&gt;列表二-3&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;列表三
+    &lt;ul&gt;
+      &lt;li&gt;列表一&lt;/li&gt;
+      &lt;li&gt;列表二&lt;/li&gt;
+      &lt;li&gt;列表三&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;有序列表-ordered-lists--&quot;&gt;有序列表 Ordered Lists (-)&lt;/h4&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;第一行&lt;/li&gt;
+  &lt;li&gt;第二行&lt;/li&gt;
+  &lt;li&gt;第三行&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;hr /&gt;
+
+&lt;h3 id=&quot;绘制表格-tables&quot;&gt;绘制表格 Tables&lt;/h3&gt;
+
+&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th&gt;项目&lt;/th&gt;
+      &lt;th style=&quot;text-align: right&quot;&gt;价格&lt;/th&gt;
+      &lt;th style=&quot;text-align: center&quot;&gt;数量&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;计算机&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;$1600&lt;/td&gt;
+      &lt;td style=&quot;text-align: center&quot;&gt;5&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;手机&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;$12&lt;/td&gt;
+      &lt;td style=&quot;text-align: center&quot;&gt;12&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;管线&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;$1&lt;/td&gt;
+      &lt;td style=&quot;text-align: center&quot;&gt;234&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th&gt;First Header&lt;/th&gt;
+      &lt;th&gt;Second Header&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;Content Cell&lt;/td&gt;
+      &lt;td&gt;Content Cell&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;Content Cell&lt;/td&gt;
+      &lt;td&gt;Content Cell&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th&gt;First Header&lt;/th&gt;
+      &lt;th&gt;Second Header&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;Content Cell&lt;/td&gt;
+      &lt;td&gt;Content Cell&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;Content Cell&lt;/td&gt;
+      &lt;td&gt;Content Cell&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th&gt;Function name&lt;/th&gt;
+      &lt;th&gt;Description&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;help()&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;Display the help window.&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;destroy()&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;&lt;strong&gt;Destroy your computer!&lt;/strong&gt;&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th style=&quot;text-align: left&quot;&gt;Left-Aligned&lt;/th&gt;
+      &lt;th style=&quot;text-align: center&quot;&gt;Center Aligned&lt;/th&gt;
+      &lt;th style=&quot;text-align: right&quot;&gt;Right Aligned&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;col 3 is&lt;/td&gt;
+      &lt;td style=&quot;text-align: center&quot;&gt;some wordy text&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;$1600&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;col 2 is&lt;/td&gt;
+      &lt;td style=&quot;text-align: center&quot;&gt;centered&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;$12&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;zebra stripes&lt;/td&gt;
+      &lt;td style=&quot;text-align: center&quot;&gt;are neat&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;$1&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th&gt;Item&lt;/th&gt;
+      &lt;th style=&quot;text-align: right&quot;&gt;Value&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;Computer&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;$1600&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;Phone&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;$12&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;Pipe&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;$1&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;hr /&gt;
+
+&lt;h4 id=&quot;特殊符号-html-entities-codes&quot;&gt;特殊符号 HTML Entities Codes&lt;/h4&gt;
+
+&lt;p&gt;© &amp;amp;  ¨ ™ ¡ £
+&amp;amp; &amp;lt; &amp;gt; ¥ € ® ± ¶ § ¦ ¯ « ·&lt;/p&gt;
+
+&lt;p&gt;X² Y³ ¾ ¼  ×  ÷   »&lt;/p&gt;
+
+&lt;p&gt;18ºC  &quot;  '&lt;/p&gt;
+</description>
+        <pubDate>Fri, 01 Sep 2017 10:42:06 +0800</pubDate>
+        <link>/dcmmc/2017/09/01/Markdown%E6%B5%8B%E8%AF%95.html</link>
+        <guid isPermaLink="true">/dcmmc/2017/09/01/Markdown%E6%B5%8B%E8%AF%95.html</guid>
+        
+        <category>test</category>
+        
+        <category>markdown</category>
+        
+        
+        <category>DCMMC</category>
+        
+      </item>
+    
+  </channel>
+</rss>

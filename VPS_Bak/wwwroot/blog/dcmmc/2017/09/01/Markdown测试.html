@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+  <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#4CAF50">
+
+  <title>markdown test</title>
+ <!-- 通过是否有page.title来判断是否是文章页面，然后载入Disqus评论的CSS 一键分享的CSS-->
+  
+  <link rel="stylesheet" href="/assets/css/share.min.css" />
+  <link rel="stylesheet" href="/assets/disqus-php-api/dist/iDisqus.min.css" />
+   
+
+  <link rel="icon" href="/assets/images/icon/favicon-32x32.ico" sizes="32x32">
+  <link rel="icon" href="/assets/images/icon/favicon-16x16.ico" sizes="16x16">
+
+  <meta name="description" content="该文章用于展示markdown生成的格式。">
+  <link rel="canonical" href="/dcmmc/2017/09/01/Markdown%E6%B5%8B%E8%AF%95.html">
+  <link rel="alternate" type="application/rss+xml" title="DCMMC | BLOG" href="/feed.xml">
+
+  <link href="https://fonts.css.network/icon?family=Material+Icons" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/materialize.min.css">
+  <link rel="stylesheet" href="/assets/css/gallery-materialize.min.opt.css">
+  <link rel="stylesheet" href="/assets/css/prism.css">
+  <link rel="stylesheet" href="/assets/css/main.css">
+  
+  <link rel="stylesheet" href="/assets/css/posts.css">
+
+</head>
+
+  <body>
+
+    <!-- 菜单和header -->
+<nav class="nav-extended green">
+  <div class="nav-background">
+    <div class="ea k" style="background-image: url('/assets/images/bg.png');"></div>
+  </div>
+  <div class="nav-wrapper db">
+    <!--移动端菜单按钮-->
+    <a href="#" data-activates="slide-out" class="button-collapse"><i class="material-icons">menu</i></a>
+    <!--页面的导航-->
+    <ul class="bt hide-on-med-and-down">
+       
+      <li>
+        <a href="/">Home</a>
+      </li>
+         
+      <li>
+        <a href="/about.html">关于</a>
+      </li>
+          
+      <li>
+        <a href="/archive.html">归档</a>
+      </li>
+                
+      <li>
+        <a href="/links.html">有关链接</a>
+      </li>
+          
+      <li>
+        <a href="/tags.html">标签</a>
+      </li>
+        
+      <li class="nav-search">
+          <div class="nav-search-wrapper">
+            <div>
+            <input class="cb-search-content" id="cb-search-content" placeholder="文章标题 日期 标签" ><i class="search material-icons">search</i>
+            </div>
+          </div>
+        </li>
+    </ul>
+    <style>
+    </style>
+    <!--页面的标题-->
+    <div class="nav-header de">
+       
+      <h1>MARKDOWN TEST</h1>
+      
+      <div class="ge">Sep 1, 2017</div>
+      
+      
+    </div>
+  </div>
+  <!-- 页面内的导航 -->
+  
+  
+</nav>
+<!--移动端nav-->
+<ul id="slide-out" class="side-nav">
+  <li>
+    <div class="userView ">
+      
+      <div class="background green">
+        <div class="mobile-background-image" style="background-image: url('/assets/images/bg.png');"></div>
+      </div>
+      
+      <a href="/"><img class="circle" src="/assets/images/M.png"></a>
+      <a href="#!"><span class="white-text name">DCMMC | BLOG</span></a>
+      <a href="mailto:xwt97294597@gmail.com"><span class="white-text email">xwt97294597@gmail.com</span></a>
+    </div>
+  </li>
+  <form action="/dcmmc/2017/09/01/Markdown%E6%B5%8B%E8%AF%95.html" method="get">
+    <div class="input-field">
+      <!--<input type="text" id="search-query" name="q" placeholder="Search" autocomplete="off">-->
+      <input class="cb-search-content" type="search" required name="q" placeholder="Search" autocomplete="off">
+      <label class="label-icon" for="search"><i class="material-icons">search</i></label>
+      <i class="material-icons">close</i>
+    </div>
+  </form>
+  <section id="search-results" style="display: none;"> </section>
+  <li>
+    <div class="divider"></div>
+  </li>
+  <li><a class="subheader">Pages</a></li>
+  <li><a class="waves-effect tooltipped" data-position="right" data-delay="50" data-tooltip="Home" href="/">Home</a></li>
+   
+  <li><a class="waves-effect tooltipped" data-position="right" data-delay="50" data-tooltip="关于" href="/about.html">关于</a></li>
+    
+  <li><a class="waves-effect tooltipped" data-position="right" data-delay="50" data-tooltip="归档" href="/archive.html">归档</a></li>
+          
+  <li><a class="waves-effect tooltipped" data-position="right" data-delay="50" data-tooltip="有关链接" href="/links.html">有关链接</a></li>
+    
+  <li><a class="waves-effect tooltipped" data-position="right" data-delay="50" data-tooltip="标签" href="/tags.html">标签</a></li>
+   
+  <li>
+    <div class="divider"></div>
+  </li>
+</ul>
+
+
+<script id="search-results-template" type="text/mustache">
+  {{#entries}}
+    <li>
+      <a class="tooltipped" data-position="right" data-delay="50" data-tooltip="{{#date}}{{pubdate}}{{/date}}" href="{{url}}">{{title}}</a>
+    </li>
+  {{/entries}}
+</script>
+<script id="search-results-nav" type="text/mustache">
+    <div class="center">
+  {{#entries}}
+   <ul>
+   <li class="post-list"><a class="waves-effect post-list black-text" data-tooltip="{{#date}}{{pubdate}}{{/date}}" href="{{url}}">{{title}}</a></li>
+   </ul>
+    
+  {{/entries}}
+  </div>
+</script>
+
+
+
+    
+
+    <main>
+
+    <div id="main" class="db">
+        <div class="content">
+     <br>
+    <div class="row">
+      <div class="col s12">
+        <div id="postsContent" class="card-panel white">
+          <span>
+            <p>该文章用于展示markdown生成的格式。</p>
+
+<h1 id="heading-1">Heading 1</h1>
+
+<h2 id="heading-2">Heading 2</h2>
+
+<h3 id="heading-3">Heading 3</h3>
+
+<h4 id="heading-4">Heading 4</h4>
+
+<h5 id="heading-5">Heading 5</h5>
+
+<h6 id="heading-6">Heading 6</h6>
+
+<h4 id="标题用底线的形式heading-underline">标题（用底线的形式）Heading (underline)</h4>
+
+<h1 id="this-is-an-h1">This is an H1</h1>
+
+<h2 id="this-is-an-h2">This is an H2</h2>
+
+<h3 id="字符效果和横线等">字符效果和横线等</h3>
+
+<hr />
+
+<p><del>删除线</del></p>
+
+<s>删除线（开启识别HTML标签时）</s>
+
+<p><em>斜体字</em>      <em>斜体字</em>
+<strong>粗体</strong>  <strong>粗体</strong>
+<strong><em>粗斜体</em></strong> <strong><em>粗斜体</em></strong></p>
+
+<p>上标：X<sub>2</sub>，下标：O<sup>2</sup></p>
+
+<p><strong>缩写(同HTML的abbr标签)</strong></p>
+
+<blockquote>
+  <p>即更长的单词或短语的缩写形式，前提是开启识别HTML标签时，已默认开启</p>
+</blockquote>
+
+<p>The <abbr title="Hyper Text Markup Language">HTML</abbr> specification is maintained by the <abbr title="World Wide Web Consortium">W3C</abbr>.</p>
+
+<h3 id="引用-blockquotes">引用 Blockquotes</h3>
+
+<blockquote>
+  <p>引用文本 Blockquotes</p>
+</blockquote>
+
+<p>引用的行内混合 Blockquotes</p>
+
+<blockquote>
+  <p>引用：如果想要插入空白换行<code class="highlighter-rouge">即&lt;br /&gt;标签</code>，在插入处先键入两个以上的空格然后回车即可，<a href="http://localhost/">普通链接</a>。</p>
+</blockquote>
+
+<h3 id="锚点与链接-links">锚点与链接 Links</h3>
+
+<p><a href="http://localhost/">普通链接</a></p>
+
+<p><a href="http://localhost/" title="普通链接带标题">普通链接带标题</a></p>
+
+<p>直接链接：<a href="https://github.com">https://github.com</a></p>
+
+<p><a href="http://www.this-anchor-link.com/">锚点链接</a></p>
+
+<p>GFM a-tail link @pandao</p>
+
+<blockquote>
+  <p>@pandao</p>
+</blockquote>
+
+<h3 id="多语言代码高亮-codes">多语言代码高亮 Codes</h3>
+
+<h4 id="行内代码-inline-code">行内代码 Inline code</h4>
+
+<p>执行命令：<code class="highlighter-rouge">npm install marked</code></p>
+
+<h4 id="缩进风格">缩进风格</h4>
+
+<p>即缩进四个空格，也做为实现类似<code class="highlighter-rouge">&lt;pre&gt;</code>预格式化文本(Preformatted Text)的功能。</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>&lt;?php
+    echo "Hello world!";
+?&gt;
+</code></pre>
+</div>
+
+<p>预格式化文本：</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>| First Header  | Second Header |
+| ------------- | ------------- |
+| Content Cell  | Content Cell  |
+| Content Cell  | Content Cell  |
+</code></pre>
+</div>
+
+<h3 id="图片-images">图片 Images</h3>
+
+<p>图片加链接 (Image + Link)：</p>
+
+<p><img src="/assets/images/M.png" alt="" /></p>
+
+<blockquote>
+  <p>图为：我的头像</p>
+</blockquote>
+
+<hr />
+
+<h3 id="列表-lists">列表 Lists</h3>
+
+<h4 id="无序列表减号unordered-lists--">无序列表（减号）Unordered Lists (-)</h4>
+
+<ul>
+  <li>列表一</li>
+  <li>列表二</li>
+  <li>列表三</li>
+</ul>
+
+<h4 id="无序列表星号unordered-lists-">无序列表（星号）Unordered Lists (*)</h4>
+
+<ul>
+  <li>列表一</li>
+  <li>列表二</li>
+  <li>列表三</li>
+</ul>
+
+<h4 id="无序列表加号和嵌套unordered-lists-">无序列表（加号和嵌套）Unordered Lists (+)</h4>
+
+<ul>
+  <li>列表一</li>
+  <li>列表二
+    <ul>
+      <li>列表二-1</li>
+      <li>列表二-2</li>
+      <li>列表二-3</li>
+    </ul>
+  </li>
+  <li>列表三
+    <ul>
+      <li>列表一</li>
+      <li>列表二</li>
+      <li>列表三</li>
+    </ul>
+  </li>
+</ul>
+
+<h4 id="有序列表-ordered-lists--">有序列表 Ordered Lists (-)</h4>
+
+<ol>
+  <li>第一行</li>
+  <li>第二行</li>
+  <li>第三行</li>
+</ol>
+
+<hr />
+
+<h3 id="绘制表格-tables">绘制表格 Tables</h3>
+
+<table>
+  <thead>
+    <tr>
+      <th>项目</th>
+      <th style="text-align: right">价格</th>
+      <th style="text-align: center">数量</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>计算机</td>
+      <td style="text-align: right">$1600</td>
+      <td style="text-align: center">5</td>
+    </tr>
+    <tr>
+      <td>手机</td>
+      <td style="text-align: right">$12</td>
+      <td style="text-align: center">12</td>
+    </tr>
+    <tr>
+      <td>管线</td>
+      <td style="text-align: right">$1</td>
+      <td style="text-align: center">234</td>
+    </tr>
+  </tbody>
+</table>
+
+<table>
+  <thead>
+    <tr>
+      <th>First Header</th>
+      <th>Second Header</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Content Cell</td>
+      <td>Content Cell</td>
+    </tr>
+    <tr>
+      <td>Content Cell</td>
+      <td>Content Cell</td>
+    </tr>
+  </tbody>
+</table>
+
+<table>
+  <thead>
+    <tr>
+      <th>First Header</th>
+      <th>Second Header</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Content Cell</td>
+      <td>Content Cell</td>
+    </tr>
+    <tr>
+      <td>Content Cell</td>
+      <td>Content Cell</td>
+    </tr>
+  </tbody>
+</table>
+
+<table>
+  <thead>
+    <tr>
+      <th>Function name</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code class="highlighter-rouge">help()</code></td>
+      <td>Display the help window.</td>
+    </tr>
+    <tr>
+      <td><code class="highlighter-rouge">destroy()</code></td>
+      <td><strong>Destroy your computer!</strong></td>
+    </tr>
+  </tbody>
+</table>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: left">Left-Aligned</th>
+      <th style="text-align: center">Center Aligned</th>
+      <th style="text-align: right">Right Aligned</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left">col 3 is</td>
+      <td style="text-align: center">some wordy text</td>
+      <td style="text-align: right">$1600</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">col 2 is</td>
+      <td style="text-align: center">centered</td>
+      <td style="text-align: right">$12</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">zebra stripes</td>
+      <td style="text-align: center">are neat</td>
+      <td style="text-align: right">$1</td>
+    </tr>
+  </tbody>
+</table>
+
+<table>
+  <thead>
+    <tr>
+      <th>Item</th>
+      <th style="text-align: right">Value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Computer</td>
+      <td style="text-align: right">$1600</td>
+    </tr>
+    <tr>
+      <td>Phone</td>
+      <td style="text-align: right">$12</td>
+    </tr>
+    <tr>
+      <td>Pipe</td>
+      <td style="text-align: right">$1</td>
+    </tr>
+  </tbody>
+</table>
+
+<hr />
+
+<h4 id="特殊符号-html-entities-codes">特殊符号 HTML Entities Codes</h4>
+
+<p>© &amp;  ¨ ™ ¡ £
+&amp; &lt; &gt; ¥ € ® ± ¶ § ¦ ¯ « ·</p>
+
+<p>X² Y³ ¾ ¼  ×  ÷   »</p>
+
+<p>18ºC  "  '</p>
+
+          </span>
+            
+    
+            <hr>
+<div class="row">
+    <div class="col s12 disqus center">
+    	<div class="share-component" data-sites="wechat,qq,douban,qzone,weibo,google,twitter,facebook,linkedin" data-mobile-sites="weibo,qq,google"></div>
+        <button id="load-disqus" class="btn waves-effect waves-light green" onclick="disqus.load();" data="blog-dcmmcc-tk">
+             评论
+        </button>
+        <div id="disqus_thread"></div>
+        <div id="comment"></div>
+    </div>
+</div>
+
+            
+        </div>
+      </div>
+    </div>
+<div class="row">
+
+
+<a data-position="right" data-delay="50" data-tooltip="jekyll安装笔记(Cent OS 6.8)" href="/dcmmc/2017/09/01/Jekyll-Install-Note.html" class="btn-floating waves-effect waves-grey btn-flat white right tooltipped"><i class="material-icons black-text">arrow_forward</i></a>
+
+</div>
+        </div>
+    </div>
+    <div class="fixed-action-btn to-top">
+        <a href="#top" id="toTop" class="btn-floating btn-large waves-effect waves-light" style="display: none;"><i
+                class="material-icons">expand_less</i></a>
+    </div>
+    <div class="fixed-action-btn body-to-top">
+        <a href="#top" id="bodyToTop" class="btn-floating btn-large waves-effect waves-light" style="display: none;"><i
+                class="material-icons">expand_less</i></a>
+    </div>
+</main>
+
+    
+
+    <footer class="page-footer green">
+        <div class="row">
+            <div class="col s12 m4 l4">
+                <p class="center p-linkIcon">
+                    
+                    
+                <a href="https://github.com/DCMMC"><img class="linkIcon center" src="/assets/images/footer/footer_ico-github.png" alt=""></a>
+                    
+                    
+                </p>
+            </div>
+            <div class="col s12 m4 l4">
+                <p class="p-date grey-text text-lighten-4 center">Copyright ©  2017  DCMMC | BLOG</p>
+            </div>
+            <div class="col s12 m4 l4 right">
+                <div class="row copyright-row">
+                    <div class="col s12 center white-text">
+                    Powered by <a class="white-text" href="https://jekyllrb.com/">Jekyll</a>
+                    </div>
+                    <div class="col s12 center white-text">
+                    Theme by <a class="white-text" href="https://rubygems.org/gems/jekyll-theme-materialize">KeJun</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    <div class="footer-copyright">
+        <div class="container">
+            All rights reserved.
+            <a class="grey-text text-lighten-4 right" href="/feed.xml">via RSS</a>
+        </div>
+    </div>
+</footer>
+<style>
+</style>
+
+    <script type="text/javascript" src="https://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+ <script type="text/javascript" src="/assets/disqus-php-api/dist/iDisqus.min.js"></script>
+ <!-- Share -->
+<script type="text/javascript" src="/assets/js/jquery.share.min.js"></script>
+<!-- Ping.js -->
+<script type="text/javascript" src="/assets/js/ping.js"></script>
+
+<script type="text/javascript" src="/assets/js/materialize.min.js"></script>
+<script type="text/javascript" src="/assets/js/jquery.scrollToTop.min.js"></script>
+<script type="text/javascript" src="/assets/js/gallery.min.opt.js"></script>
+<script type="text/javascript" src="/assets/js/jquery.lazyload.min.js"></script>
+<script type="text/javascript" src="/assets/js/toc.js"></script>
+<script type="text/javascript" src="/assets/js/main.js"></script>
+<script type="text/javascript" src="/assets/js/bootstrap3-typeahead.min.js"></script>
+
+
+
+
+<script>
+   $(document).ready(function () {
+        var time1 = 0;
+        var show = false;
+        var names = new Array(); //文章名字等
+        var urls = new Array(); //文章地址
+        $.getJSON("/assets/cb-search.json").done(function (data) {
+            if (data.code == 0) {
+                for (var index in data.data) {
+                    var item = data.data[index];
+                    names.push(item.title);
+                    urls.push(item.url);
+                }
+
+                $(".cb-search-content").typeahead({
+                    source: names,
+
+                    afterSelect: function (item) {
+						$(".cb-search-tool").css("display", "none");
+                        show = false;
+                        window.location.href = (urls[names.indexOf(item)]);
+                        return item;
+                    }
+                });
+            }
+        }).error(function(data, b) { console.log("json解析错误，搜索功能暂不可用，请检查文章title，确保不含有换行等特殊符号"); });
+            
+                var posts = $("div.gallery-item");
+                if (posts.attr("data-url")){
+                posts.unbind();
+                posts.click(function(){
+                    var postUrl = $(this).attr("data-url")
+                    window.location.href=postUrl;
+                })
+                }
+
+            
+    });
+
+</script>
+
+
+    
+
+  </body>
+
+</html>

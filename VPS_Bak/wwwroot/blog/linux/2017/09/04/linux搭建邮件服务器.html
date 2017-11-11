@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+  <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#4CAF50">
+
+  <title>linux搭建邮件服务器</title>
+ <!-- 通过是否有page.title来判断是否是文章页面，然后载入Disqus评论的CSS 一键分享的CSS-->
+  
+  <link rel="stylesheet" href="/assets/css/share.min.css" />
+  <link rel="stylesheet" href="/assets/disqus-php-api/dist/iDisqus.min.css" />
+   
+
+  <link rel="icon" href="/assets/images/icon/favicon-32x32.ico" sizes="32x32">
+  <link rel="icon" href="/assets/images/icon/favicon-16x16.ico" sizes="16x16">
+
+  <meta name="description" content="准备工作">
+  <link rel="canonical" href="/linux/2017/09/04/linux%E6%90%AD%E5%BB%BA%E9%82%AE%E4%BB%B6%E6%9C%8D%E5%8A%A1%E5%99%A8.html">
+  <link rel="alternate" type="application/rss+xml" title="DCMMC | BLOG" href="/feed.xml">
+
+  <link href="https://fonts.css.network/icon?family=Material+Icons" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/materialize.min.css">
+  <link rel="stylesheet" href="/assets/css/gallery-materialize.min.opt.css">
+  <link rel="stylesheet" href="/assets/css/prism.css">
+  <link rel="stylesheet" href="/assets/css/main.css">
+  
+  <link rel="stylesheet" href="/assets/css/posts.css">
+
+</head>
+
+  <body>
+
+    <!-- 菜单和header -->
+<nav class="nav-extended green">
+  <div class="nav-background">
+    <div class="ea k" style="background-image: url('/assets/images/bg.png');"></div>
+  </div>
+  <div class="nav-wrapper db">
+    <!--移动端菜单按钮-->
+    <a href="#" data-activates="slide-out" class="button-collapse"><i class="material-icons">menu</i></a>
+    <!--页面的导航-->
+    <ul class="bt hide-on-med-and-down">
+       
+      <li>
+        <a href="/">Home</a>
+      </li>
+         
+      <li>
+        <a href="/about.html">关于</a>
+      </li>
+          
+      <li>
+        <a href="/archive.html">归档</a>
+      </li>
+                
+      <li>
+        <a href="/links.html">有关链接</a>
+      </li>
+          
+      <li>
+        <a href="/tags.html">标签</a>
+      </li>
+        
+      <li class="nav-search">
+          <div class="nav-search-wrapper">
+            <div>
+            <input class="cb-search-content" id="cb-search-content" placeholder="文章标题 日期 标签" ><i class="search material-icons">search</i>
+            </div>
+          </div>
+        </li>
+    </ul>
+    <style>
+    </style>
+    <!--页面的标题-->
+    <div class="nav-header de">
+       
+      <h1>LINUX搭建邮件服务器</h1>
+      
+      <div class="ge">Sep 4, 2017</div>
+      
+      
+    </div>
+  </div>
+  <!-- 页面内的导航 -->
+  
+  
+</nav>
+<!--移动端nav-->
+<ul id="slide-out" class="side-nav">
+  <li>
+    <div class="userView ">
+      
+      <div class="background green">
+        <div class="mobile-background-image" style="background-image: url('/assets/images/bg.png');"></div>
+      </div>
+      
+      <a href="/"><img class="circle" src="/assets/images/M.png"></a>
+      <a href="#!"><span class="white-text name">DCMMC | BLOG</span></a>
+      <a href="mailto:xwt97294597@gmail.com"><span class="white-text email">xwt97294597@gmail.com</span></a>
+    </div>
+  </li>
+  <form action="/linux/2017/09/04/linux%E6%90%AD%E5%BB%BA%E9%82%AE%E4%BB%B6%E6%9C%8D%E5%8A%A1%E5%99%A8.html" method="get">
+    <div class="input-field">
+      <!--<input type="text" id="search-query" name="q" placeholder="Search" autocomplete="off">-->
+      <input class="cb-search-content" type="search" required name="q" placeholder="Search" autocomplete="off">
+      <label class="label-icon" for="search"><i class="material-icons">search</i></label>
+      <i class="material-icons">close</i>
+    </div>
+  </form>
+  <section id="search-results" style="display: none;"> </section>
+  <li>
+    <div class="divider"></div>
+  </li>
+  <li><a class="subheader">Pages</a></li>
+  <li><a class="waves-effect tooltipped" data-position="right" data-delay="50" data-tooltip="Home" href="/">Home</a></li>
+   
+  <li><a class="waves-effect tooltipped" data-position="right" data-delay="50" data-tooltip="关于" href="/about.html">关于</a></li>
+    
+  <li><a class="waves-effect tooltipped" data-position="right" data-delay="50" data-tooltip="归档" href="/archive.html">归档</a></li>
+          
+  <li><a class="waves-effect tooltipped" data-position="right" data-delay="50" data-tooltip="有关链接" href="/links.html">有关链接</a></li>
+    
+  <li><a class="waves-effect tooltipped" data-position="right" data-delay="50" data-tooltip="标签" href="/tags.html">标签</a></li>
+   
+  <li>
+    <div class="divider"></div>
+  </li>
+</ul>
+
+
+<script id="search-results-template" type="text/mustache">
+  {{#entries}}
+    <li>
+      <a class="tooltipped" data-position="right" data-delay="50" data-tooltip="{{#date}}{{pubdate}}{{/date}}" href="{{url}}">{{title}}</a>
+    </li>
+  {{/entries}}
+</script>
+<script id="search-results-nav" type="text/mustache">
+    <div class="center">
+  {{#entries}}
+   <ul>
+   <li class="post-list"><a class="waves-effect post-list black-text" data-tooltip="{{#date}}{{pubdate}}{{/date}}" href="{{url}}">{{title}}</a></li>
+   </ul>
+    
+  {{/entries}}
+  </div>
+</script>
+
+
+
+    
+
+    <main>
+    <div class="db">
+        <div class="content">
+            <div class="row">
+                <div class="toc col s12 m9 l10">
+                 <br>
+    <div class="row">
+      <div class="col s12">
+        <div id="postsContent" class="card-panel white">
+          <span>
+            <h1 id="准备工作">准备工作</h1>
+
+<p>Roundcube 需要PHP IMAP扩展支持，如果在编译PHP时没开启IMAP支持，可以用下面的方法添加扩展</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code># yum install libc-client-devel libc-client
+</code></pre>
+</div>
+
+<p>安装 php-imap 扩展依赖的的廉包
+进入到php源码包 imap 扩展库路径下 如 /opt/php-5.3.12/ext/imap 执行</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code># /usr/local/php/bin/phpize 
+# ./configure --with-php-config=/usr/local/php/bin/php-config --with-kerberos --with-imap-ssl
+</code></pre>
+</div>
+
+<p>检查系统配置过程中国如果提示出错，可以尝试将libc-client 库做个链接到lib 下</p>
+
+<h1 id="ln--s-usrlib64libc-clientso-usrliblibc-clientso">ln -s /usr/lib64/libc-client.so /usr/lib/libc-client.so</h1>
+<h1 id="make--make-install">make &amp;&amp; make install</h1>
+<p>安装后修改 php.ini 的 extension_dir路径 ，并加入 extension=”imap.so” 扩展
+卸载系统自带的sendmail 或 postfix</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code># yum remove sendmail postfix
+</code></pre>
+</div>
+
+<h1 id="安装postfix">安装Postfix</h1>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>yum -y install postfix
+
+</code></pre>
+</div>
+<p>安装完成还需要替换系统自带的sendmail：</p>
+
+<p>rpm -e sendmail
+或者
+yum remove sendmail</p>
+
+<p>修改MTA（默认邮件传输代理）</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>alternatives --config mta
+</code></pre>
+</div>
+<p>然后直接回车即可。</p>
+
+<p>检查一下是不是已经设置成功了。</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>alternatives --display mta
+</code></pre>
+</div>
+
+<p>第一行可以看到mta的状态。 例如：mat - status is manual.</p>
+
+<h1 id="安装dovecot">安装Dovecot</h1>
+
+<p>yum -y install dovecot</p>
+
+<h1 id="配置postfix">配置Postfix</h1>
+
+<p>编辑/etc/postfix/main.cf，可以下载下来修改，也可以使用vi进行编辑：</p>
+
+<p>vi /etc/postfix/main.cf</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>修改如下：
+
+# 75行: 取消注释，设置hostname
+myhostname = mail.lomu.me
+# 83行: 取消注释，设置域名
+mydomain = lomu.me
+# 99行: 取消注释
+myorigin = $mydomain
+# 116行: 修改
+inet_interfaces = all
+# 119行: 推荐ipv4，如果支持ipv6，则可以为all
+inet_protocols = ipv4
+# 164行: 添加
+mydestination = $myhostname, localhost.$mydomain, localhost, $mydomain
+# 264行: 取消注释，指定内网和本地的IP地址范围
+mynetworks = 127.0.0.0/8, 10.0.0.0/24
+# 419行: 取消注释，邮件保存目录
+home_mailbox = Maildir/
+# 571行: 添加
+smtpd_banner = $myhostname ESMTP
+
+
+# Virtual mailbox settings.
+virtual_mailbox_base = /var/vmail
+virtual_mailbox_maps = mysql:/etc/postfix/mysql_virtual_mailbox_maps.cf
+virtual_mailbox_domains = mysql:/etc/postfix/mysql_virtual_domains_maps.cf
+virtual_alias_maps = mysql:/etc/postfix/mysql_virtual_alias_maps.cf
+virtual_uid_maps = static:邮件POSTFIX用户ID
+virtual_gid_maps = static:邮件POSTFIX组ID
+virtual_transport = virtual
+# 添加到最后
+# 规定邮件最大尺寸为10M
+message_size_limit = 10485760
+# 规定收件箱最大容量为1G
+mailbox_size_limit = 1073741824
+virtual_create_maildirsize = yes
+virtual_mailbox_extended = yes
+virtual_mailbox_limit_maps = mysql:/etc/postfix/mysql_virtual_limit_maps.cf
+virtual_mailbox_limit_override = yes
+virtual_maildir_limit_message = Sorry, the user's maildir has exceeded the quota.
+virtual_overquota_bounce = yes
+
+# SASL settings
+smtpd_sasl_auth_enable = yes
+smtpd_sasl_local_domain = $mydomain
+smtpd_sasl_security_options = noanonymous
+smtpd_sasl_type = dovecot
+smtpd_sasl_path = /var/lib/dovecot/run/dovecot/auth-login
+broken_sasl_auth_clients = yes
+smtpd_recipient_restrictions = permit_mynetworks, permit_sasl_authenticated, reject_unauth_destination, reject_invalid_hostname, reject_non_fqdn_hostname, reject_non_fqdn_sender, reject_non_fqdn_recipient
+</code></pre>
+</div>
+
+<p>virtual_uid_maps 和 virtual_gid_maps 改成postfix 用户的uid和gid 如果不知道ID，可用 id postfix 命令获取</p>
+
+<p>添加数据库查询配置文件，根据需要修改数据库用户名密码，主机名，数据库名配置信息，在后面创建MYSQL数据库，登录用户的时候需要用到。</p>
+
+<h2 id="建立数据库别名查询配置文件">建立数据库别名查询配置文件</h2>
+
+<p>vi /etc/postfix/mysql_virtual_alias_maps.cf</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>user = postfix
+password = postfixpassword
+hosts = localhost
+dbname = postfix
+table = alias
+select_field = goto
+where_field = address
+additional_conditions = and active = '1'
+#query = SELECT goto FROM alias WHERE address='%s' AND active = '1'
+</code></pre>
+</div>
+
+<h2 id="建立数据库虚拟域查询配置文件">建立数据库虚拟域查询配置文件</h2>
+
+<p>vi /etc/postfix/mysql_virtual_domains_maps.cf</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>user = postfix
+password = postfixpassword
+hosts = localhost
+dbname = postfix
+table = domain
+select_field = domain
+where_field = domain
+additional_conditions = and active = '1'
+#query = SELECT domain FROM domain WHERE domain='%s' AND active = '1'
+</code></pre>
+</div>
+
+<h2 id="建立数据库邮箱配额查询配置文件">建立数据库邮箱配额查询配置文件</h2>
+
+<p>vi /etc/postfix/mysql_virtual_mailbox_limit_maps.cf</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>user = postfix
+password = postfixpassword
+hosts = localhost
+dbname = postfix
+table = mailbox
+select_field = quota
+where_field = username
+additional_conditions = and active = '1'
+#query = SELECT quota FROM mailbox WHERE username='%s' AND active = '1'
+</code></pre>
+</div>
+
+<h2 id="建立数据库虚拟邮箱查询配置文件">建立数据库虚拟邮箱查询配置文件</h2>
+
+<p>vi /etc/postfix/mysql_virtual_mailbox_maps.cf</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>user = postfix
+password = postfixpassword
+hosts = localhost
+dbname = postfix
+table = mailbox
+select_field = CONCAT(domain,'/',maildir)
+where_field = username
+additional_conditions = and active = '1'
+#query = SELECT CONCAT(domain,'/',maildir) FROM mailbox WHERE username='%s' AND active = '1'
+</code></pre>
+</div>
+
+<p>修改好了之后使用/etc/rc.d/init.d/postfix start开启postfix，使用chkconfig postfix on将postfix开机启动。</p>
+
+<h1 id="配置dovecot">配置Dovecot</h1>
+
+<p>修改如下：</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>[root@mail ~]# vi /etc/dovecot/dovecot.conf
+
+</code></pre>
+</div>
+<h1 id="20行-开启pop3-imap">20行 开启pop3 imap</h1>
+<p>rotocols = pop3 imap</p>
+<h1 id="26行-如果不使用ipv6请修改为">26行: 如果不使用IPv6，请修改为*</h1>
+<p>listen = *</p>
+<h1 id="at-last">At last</h1>
+<h1 id="使用postfix-用户">使用postfix 用户</h1>
+<p>default_login_user=postfix
+default_internal_user=postfix</p>
+<h1 id="日志路径">日志路径</h1>
+<p>log_path = /var/log/dovecot.log
+log_timestamp = “%Y-%m-%d %H:%M:%S “</p>
+<h1 id="邮件存储路径">邮件存储路径</h1>
+<p>ssl = no 
+mail_location = maildir:/var/vmail/%d/%u
+mail_privileged_group = mail</p>
+<h1 id="postfix-用户uid">postfix 用户UID</h1>
+<p>first_valid_uid = 89</p>
+<div class="highlighter-rouge"><pre class="highlight"><code>
+[root@mail ~]# vi /etc/dovecot/conf.d/10-auth.conf
+# 9行: 取消注释并修改
+disable_plaintext_auth = no
+# 97行: 添加
+auth_mechanisms = plain login
+
+[root@mail ~]# vi /etc/dovecot/conf.d/10-mail.conf
+# 30行: 取消注释并添加
+mail_location = maildir:/var/vmail/%d/%u
+
+[root@mail ~]# vi /etc/dovecot/conf.d/10-master.conf
+# 88-90行: 取消注释并添加
+# Postfix smtp验证
+unix_listener /var/spool/postfix/private/auth {
+    mode = 0666
+    user = postfix
+    group = postfix
+}
+
+建立MYSQL 配置文件，注意修改连接用户名密码，和前面的postfix配置一致
+vi /etc/dovecot/dovecot-mysql.conf
+
+</code></pre>
+</div>
+<p>driver = mysql
+connect = host=localhost dbname=postfix user=postfix password=postfixpassword
+default_pass_scheme = MD5-CRYPT
+password_query = SELECT password FROM mailbox WHERE username = ‘%u’
+user_query = SELECT maildir, 502 AS uid, 502 AS gid FROM mailbox WHERE username = ‘%u’</p>
+<div class="highlighter-rouge"><pre class="highlight"><code>建立邮箱文件夹,并给予postfix 用户权限
+
+</code></pre>
+</div>
+<p>mkdir -pv /var/vmail
+chown -R postfix.postfix /var/vmail</p>
+<div class="highlighter-rouge"><pre class="highlight"><code>
+[root@mail ~]# /etc/rc.d/init.d/dovecot start
+Starting Dovecot Imap:     [ OK ]
+
+[root@mail ~]# chkconfig dovecot on 
+</code></pre>
+</div>
+
+<h1 id="安装配置-postfixadmin">安装配置 Postfixadmin</h1>
+
+<h1 id="reference">Reference</h1>
+
+<ol>
+  <li><a href="http://www.cnblogs.com/chris-cp/p/4843407.html">http://www.cnblogs.com/chris-cp/p/4843407.html</a></li>
+</ol>
+
+          </span>
+            
+    
+            <hr>
+<div class="row">
+    <div class="col s12 disqus center">
+    	<div class="share-component" data-sites="wechat,qq,douban,qzone,weibo,google,twitter,facebook,linkedin" data-mobile-sites="weibo,qq,google"></div>
+        <button id="load-disqus" class="btn waves-effect waves-light green" onclick="disqus.load();" data="blog-dcmmcc-tk">
+             评论
+        </button>
+        <div id="disqus_thread"></div>
+        <div id="comment"></div>
+    </div>
+</div>
+
+            
+        </div>
+      </div>
+    </div>
+<div class="row">
+
+<a data-position="left" data-delay="50" data-tooltip="Let’s Encrypt颁发免费多域名https证书" href="/linux/2017/09/04/Let-s-Encrypt%E9%A2%81%E5%8F%91%E5%85%8D%E8%B4%B9%E5%A4%9A%E5%9F%9F%E5%90%8Dhttps%E8%AF%81%E4%B9%A6.html" class="btn-floating waves-effect waves-grey btn-flat white tooltipped"><i class="material-icons black-text">arrow_back</i></a>
+
+
+<a data-position="right" data-delay="50" data-tooltip="Nginx搭建Google镜像站点" href="/linux/2017/10/23/Google%E9%95%9C%E5%83%8F%E7%AB%99%E7%82%B9%E6%90%AD%E5%BB%BA.html" class="btn-floating waves-effect waves-grey btn-flat white right tooltipped"><i class="material-icons black-text">arrow_forward</i></a>
+
+</div>
+                </div>
+                <div class="col hide-on-small-only m3 l2">
+                    <div class="toc-wrapper pin-top" style="top: 0px;">
+                        <div id="toc"></div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    
+    </div>
+    <div class="fixed-action-btn">
+        <a href="#top" id="toTop" class="btn-floating btn-large waves-effect waves-light" style="display: none;"><i
+                class="material-icons">expand_less</i></a>
+    </div>
+</main>
+
+    
+
+    <footer class="page-footer green">
+        <div class="row">
+            <div class="col s12 m4 l4">
+                <p class="center p-linkIcon">
+                    
+                    
+                <a href="https://github.com/DCMMC"><img class="linkIcon center" src="/assets/images/footer/footer_ico-github.png" alt=""></a>
+                    
+                    
+                </p>
+            </div>
+            <div class="col s12 m4 l4">
+                <p class="p-date grey-text text-lighten-4 center">Copyright ©  2017  DCMMC | BLOG</p>
+            </div>
+            <div class="col s12 m4 l4 right">
+                <div class="row copyright-row">
+                    <div class="col s12 center white-text">
+                    Powered by <a class="white-text" href="https://jekyllrb.com/">Jekyll</a>
+                    </div>
+                    <div class="col s12 center white-text">
+                    Theme by <a class="white-text" href="https://rubygems.org/gems/jekyll-theme-materialize">KeJun</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    <div class="footer-copyright">
+        <div class="container">
+            All rights reserved.
+            <a class="grey-text text-lighten-4 right" href="/feed.xml">via RSS</a>
+        </div>
+    </div>
+</footer>
+<style>
+</style>
+
+    <script type="text/javascript" src="https://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+ <script type="text/javascript" src="/assets/disqus-php-api/dist/iDisqus.min.js"></script>
+ <!-- Share -->
+<script type="text/javascript" src="/assets/js/jquery.share.min.js"></script>
+<!-- Ping.js -->
+<script type="text/javascript" src="/assets/js/ping.js"></script>
+
+<script type="text/javascript" src="/assets/js/materialize.min.js"></script>
+<script type="text/javascript" src="/assets/js/jquery.scrollToTop.min.js"></script>
+<script type="text/javascript" src="/assets/js/gallery.min.opt.js"></script>
+<script type="text/javascript" src="/assets/js/jquery.lazyload.min.js"></script>
+<script type="text/javascript" src="/assets/js/toc.js"></script>
+<script type="text/javascript" src="/assets/js/main.js"></script>
+<script type="text/javascript" src="/assets/js/bootstrap3-typeahead.min.js"></script>
+
+
+
+
+<script>
+   $(document).ready(function () {
+        var time1 = 0;
+        var show = false;
+        var names = new Array(); //文章名字等
+        var urls = new Array(); //文章地址
+        $.getJSON("/assets/cb-search.json").done(function (data) {
+            if (data.code == 0) {
+                for (var index in data.data) {
+                    var item = data.data[index];
+                    names.push(item.title);
+                    urls.push(item.url);
+                }
+
+                $(".cb-search-content").typeahead({
+                    source: names,
+
+                    afterSelect: function (item) {
+						$(".cb-search-tool").css("display", "none");
+                        show = false;
+                        window.location.href = (urls[names.indexOf(item)]);
+                        return item;
+                    }
+                });
+            }
+        }).error(function(data, b) { console.log("json解析错误，搜索功能暂不可用，请检查文章title，确保不含有换行等特殊符号"); });
+            
+                var posts = $("div.gallery-item");
+                if (posts.attr("data-url")){
+                posts.unbind();
+                posts.click(function(){
+                    var postUrl = $(this).attr("data-url")
+                    window.location.href=postUrl;
+                })
+                }
+
+            
+    });
+
+</script>
+
+
+    
+
+  </body>
+
+</html>

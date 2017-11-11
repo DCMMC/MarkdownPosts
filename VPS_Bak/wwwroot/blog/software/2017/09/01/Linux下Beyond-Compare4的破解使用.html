@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+  <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#4CAF50">
+
+  <title>Linux下Beyond Compare4的破解使用</title>
+ <!-- 通过是否有page.title来判断是否是文章页面，然后载入Disqus评论的CSS 一键分享的CSS-->
+  
+  <link rel="stylesheet" href="/assets/css/share.min.css" />
+  <link rel="stylesheet" href="/assets/disqus-php-api/dist/iDisqus.min.css" />
+   
+
+  <link rel="icon" href="/assets/images/icon/favicon-32x32.ico" sizes="32x32">
+  <link rel="icon" href="/assets/images/icon/favicon-16x16.ico" sizes="16x16">
+
+  <meta name="description" content="1.官网下载最新版 Beyond Compare 4 并安装">
+  <link rel="canonical" href="/software/2017/09/01/Linux%E4%B8%8BBeyond-Compare4%E7%9A%84%E7%A0%B4%E8%A7%A3%E4%BD%BF%E7%94%A8.html">
+  <link rel="alternate" type="application/rss+xml" title="DCMMC | BLOG" href="/feed.xml">
+
+  <link href="https://fonts.css.network/icon?family=Material+Icons" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/materialize.min.css">
+  <link rel="stylesheet" href="/assets/css/gallery-materialize.min.opt.css">
+  <link rel="stylesheet" href="/assets/css/prism.css">
+  <link rel="stylesheet" href="/assets/css/main.css">
+  
+  <link rel="stylesheet" href="/assets/css/posts.css">
+
+</head>
+
+  <body>
+
+    <!-- 菜单和header -->
+<nav class="nav-extended green">
+  <div class="nav-background">
+    <div class="ea k" style="background-image: url('/assets/images/bg.png');"></div>
+  </div>
+  <div class="nav-wrapper db">
+    <!--移动端菜单按钮-->
+    <a href="#" data-activates="slide-out" class="button-collapse"><i class="material-icons">menu</i></a>
+    <!--页面的导航-->
+    <ul class="bt hide-on-med-and-down">
+       
+      <li>
+        <a href="/">Home</a>
+      </li>
+         
+      <li>
+        <a href="/about.html">关于</a>
+      </li>
+          
+      <li>
+        <a href="/archive.html">归档</a>
+      </li>
+                
+      <li>
+        <a href="/links.html">有关链接</a>
+      </li>
+          
+      <li>
+        <a href="/tags.html">标签</a>
+      </li>
+        
+      <li class="nav-search">
+          <div class="nav-search-wrapper">
+            <div>
+            <input class="cb-search-content" id="cb-search-content" placeholder="文章标题 日期 标签" ><i class="search material-icons">search</i>
+            </div>
+          </div>
+        </li>
+    </ul>
+    <style>
+    </style>
+    <!--页面的标题-->
+    <div class="nav-header de">
+       
+      <h1>LINUX下BEYOND COMPARE4的破解使用</h1>
+      
+      <div class="ge">Sep 1, 2017</div>
+      
+      
+    </div>
+  </div>
+  <!-- 页面内的导航 -->
+  
+  
+</nav>
+<!--移动端nav-->
+<ul id="slide-out" class="side-nav">
+  <li>
+    <div class="userView ">
+      
+      <div class="background green">
+        <div class="mobile-background-image" style="background-image: url('/assets/images/bg.png');"></div>
+      </div>
+      
+      <a href="/"><img class="circle" src="/assets/images/M.png"></a>
+      <a href="#!"><span class="white-text name">DCMMC | BLOG</span></a>
+      <a href="mailto:xwt97294597@gmail.com"><span class="white-text email">xwt97294597@gmail.com</span></a>
+    </div>
+  </li>
+  <form action="/software/2017/09/01/Linux%E4%B8%8BBeyond-Compare4%E7%9A%84%E7%A0%B4%E8%A7%A3%E4%BD%BF%E7%94%A8.html" method="get">
+    <div class="input-field">
+      <!--<input type="text" id="search-query" name="q" placeholder="Search" autocomplete="off">-->
+      <input class="cb-search-content" type="search" required name="q" placeholder="Search" autocomplete="off">
+      <label class="label-icon" for="search"><i class="material-icons">search</i></label>
+      <i class="material-icons">close</i>
+    </div>
+  </form>
+  <section id="search-results" style="display: none;"> </section>
+  <li>
+    <div class="divider"></div>
+  </li>
+  <li><a class="subheader">Pages</a></li>
+  <li><a class="waves-effect tooltipped" data-position="right" data-delay="50" data-tooltip="Home" href="/">Home</a></li>
+   
+  <li><a class="waves-effect tooltipped" data-position="right" data-delay="50" data-tooltip="关于" href="/about.html">关于</a></li>
+    
+  <li><a class="waves-effect tooltipped" data-position="right" data-delay="50" data-tooltip="归档" href="/archive.html">归档</a></li>
+          
+  <li><a class="waves-effect tooltipped" data-position="right" data-delay="50" data-tooltip="有关链接" href="/links.html">有关链接</a></li>
+    
+  <li><a class="waves-effect tooltipped" data-position="right" data-delay="50" data-tooltip="标签" href="/tags.html">标签</a></li>
+   
+  <li>
+    <div class="divider"></div>
+  </li>
+</ul>
+
+
+<script id="search-results-template" type="text/mustache">
+  {{#entries}}
+    <li>
+      <a class="tooltipped" data-position="right" data-delay="50" data-tooltip="{{#date}}{{pubdate}}{{/date}}" href="{{url}}">{{title}}</a>
+    </li>
+  {{/entries}}
+</script>
+<script id="search-results-nav" type="text/mustache">
+    <div class="center">
+  {{#entries}}
+   <ul>
+   <li class="post-list"><a class="waves-effect post-list black-text" data-tooltip="{{#date}}{{pubdate}}{{/date}}" href="{{url}}">{{title}}</a></li>
+   </ul>
+    
+  {{/entries}}
+  </div>
+</script>
+
+
+
+    
+
+    <main>
+    <div class="db">
+        <div class="content">
+            <div class="row">
+                <div class="toc col s12 m9 l10">
+                 <br>
+    <div class="row">
+      <div class="col s12">
+        <div id="postsContent" class="card-panel white">
+          <span>
+            <h1 id="1官网下载最新版-beyond-compare-4-并安装">1.官网下载最新版 Beyond Compare 4 并安装</h1>
+
+<p>http://www.scootersoftware.com/download.php</p>
+
+<h1 id="2命令">2.命令</h1>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>
+cd /usr/lib/beyondcompare/
+
+sudo sed -i "s/keexjEP3t4Mue23hrnuPtY4TdcsqNiJL-5174TsUdLmJSIXKfG2NGPwBL6vnRPddT7tH29qpkneX63DO9ECSPE9rzY1zhThHERg8lHM9IBFT+rVuiY823aQJuqzxCKIE1bcDqM4wgW01FH6oCBP1G4ub01xmb4BGSUG6ZrjxWHJyNLyIlGvOhoY2HAYzEtzYGwxFZn2JZ66o4RONkXjX0DF9EzsdUef3UAS+JQ+fCYReLawdjEe6tXCv88GKaaPKWxCeaUL9PejICQgRQOLGOZtZQkLgAelrOtehxz5ANOOqCaJgy2mJLQVLM5SJ9Dli909c5ybvEhVmIC0dc9dWH+/N9KmiLVlKMU7RJqnE+WXEEPI1SgglmfmLc1yVH7dqBb9ehOoKG9UE+HAE1YvH1XX2XVGeEqYUY-Tsk7YBTz0WpSpoYyPgx6Iki5KLtQ5G-aKP9eysnkuOAkrvHU8bLbGtZteGwJarev03PhfCioJL4OSqsmQGEvDbHFEbNl1qJtdwEriR+VNZts9vNNLk7UGfeNwIiqpxjk4Mn09nmSd8FhM4ifvcaIbNCRoMPGl6KU12iseSe+w+1kFsLhX+OhQM8WXcWV10cGqBzQE9OqOLUcg9n0krrR3KrohstS9smTwEx9olyLYppvC0p5i7dAx2deWvM1ZxKNs0BvcXGukR+/g" BCompare
+
+</code></pre>
+</div>
+
+<h1 id="3此时bcompare文件已被破解打开软件会提示trial-mode-error表示成功输入team-zwt生成的密钥即可注册成功">3.此时BCompare文件已被破解，打开软件会提示Trial Mode Error！表示成功，输入Team ZWT生成的密钥即可注册成功</h1>
+
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="gd">--- BEGIN LICENSE KEY ---
+</span>GXN1eh9FbDiX1ACdd7XKMV7hL7x0ClBJLUJ-zFfKofjaj2yxE53xauIfkqZ8FoLpcZ0Ux6McTyNmODDSvSIHLYhg1QkTxjCeSCk6ARz0ABJcnUmd3dZYJNWFyJun14rmGByRnVPL49QH+Rs0kjRGKCB-cb8IT4Gf0Ue9WMQ1A6t31MO9jmjoYUeoUmbeAQSofvuK8GN1rLRv7WXfUJ0uyvYlGLqzq1ZoJAJDyo0Kdr4ThF-IXcv2cxVyWVW1SaMq8GFosDEGThnY7C-SgNXW30jqAOgiRjKKRX9RuNeDMFqgP2cuf0NMvyMrMScnM1ZyiAaJJtzbxqN5hZOMClUTE+++
+<span class="gd">--- END LICENSE KEY -----
+</span></code></pre>
+</div>
+
+          </span>
+            
+    
+            <hr>
+<div class="row">
+    <div class="col s12 disqus center">
+    	<div class="share-component" data-sites="wechat,qq,douban,qzone,weibo,google,twitter,facebook,linkedin" data-mobile-sites="weibo,qq,google"></div>
+        <button id="load-disqus" class="btn waves-effect waves-light green" onclick="disqus.load();" data="blog-dcmmcc-tk">
+             评论
+        </button>
+        <div id="disqus_thread"></div>
+        <div id="comment"></div>
+    </div>
+</div>
+
+            
+        </div>
+      </div>
+    </div>
+<div class="row">
+
+<a data-position="left" data-delay="50" data-tooltip="jekyll安装笔记(Cent OS 6.8)" href="/dcmmc/2017/09/01/Jekyll-Install-Note.html" class="btn-floating waves-effect waves-grey btn-flat white tooltipped"><i class="material-icons black-text">arrow_back</i></a>
+
+
+<a data-position="right" data-delay="50" data-tooltip="CentOS6搭建FTP服务记录" href="/linux/2017/09/04/CentOS6%E6%90%AD%E5%BB%BAFTP%E6%9C%8D%E5%8A%A1%E8%AE%B0%E5%BD%95.html" class="btn-floating waves-effect waves-grey btn-flat white right tooltipped"><i class="material-icons black-text">arrow_forward</i></a>
+
+</div>
+                </div>
+                <div class="col hide-on-small-only m3 l2">
+                    <div class="toc-wrapper pin-top" style="top: 0px;">
+                        <div id="toc"></div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    
+    </div>
+    <div class="fixed-action-btn">
+        <a href="#top" id="toTop" class="btn-floating btn-large waves-effect waves-light" style="display: none;"><i
+                class="material-icons">expand_less</i></a>
+    </div>
+</main>
+
+    
+
+    <footer class="page-footer green">
+        <div class="row">
+            <div class="col s12 m4 l4">
+                <p class="center p-linkIcon">
+                    
+                    
+                <a href="https://github.com/DCMMC"><img class="linkIcon center" src="/assets/images/footer/footer_ico-github.png" alt=""></a>
+                    
+                    
+                </p>
+            </div>
+            <div class="col s12 m4 l4">
+                <p class="p-date grey-text text-lighten-4 center">Copyright ©  2017  DCMMC | BLOG</p>
+            </div>
+            <div class="col s12 m4 l4 right">
+                <div class="row copyright-row">
+                    <div class="col s12 center white-text">
+                    Powered by <a class="white-text" href="https://jekyllrb.com/">Jekyll</a>
+                    </div>
+                    <div class="col s12 center white-text">
+                    Theme by <a class="white-text" href="https://rubygems.org/gems/jekyll-theme-materialize">KeJun</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    <div class="footer-copyright">
+        <div class="container">
+            All rights reserved.
+            <a class="grey-text text-lighten-4 right" href="/feed.xml">via RSS</a>
+        </div>
+    </div>
+</footer>
+<style>
+</style>
+
+    <script type="text/javascript" src="https://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+ <script type="text/javascript" src="/assets/disqus-php-api/dist/iDisqus.min.js"></script>
+ <!-- Share -->
+<script type="text/javascript" src="/assets/js/jquery.share.min.js"></script>
+<!-- Ping.js -->
+<script type="text/javascript" src="/assets/js/ping.js"></script>
+
+<script type="text/javascript" src="/assets/js/materialize.min.js"></script>
+<script type="text/javascript" src="/assets/js/jquery.scrollToTop.min.js"></script>
+<script type="text/javascript" src="/assets/js/gallery.min.opt.js"></script>
+<script type="text/javascript" src="/assets/js/jquery.lazyload.min.js"></script>
+<script type="text/javascript" src="/assets/js/toc.js"></script>
+<script type="text/javascript" src="/assets/js/main.js"></script>
+<script type="text/javascript" src="/assets/js/bootstrap3-typeahead.min.js"></script>
+
+
+
+
+<script>
+   $(document).ready(function () {
+        var time1 = 0;
+        var show = false;
+        var names = new Array(); //文章名字等
+        var urls = new Array(); //文章地址
+        $.getJSON("/assets/cb-search.json").done(function (data) {
+            if (data.code == 0) {
+                for (var index in data.data) {
+                    var item = data.data[index];
+                    names.push(item.title);
+                    urls.push(item.url);
+                }
+
+                $(".cb-search-content").typeahead({
+                    source: names,
+
+                    afterSelect: function (item) {
+						$(".cb-search-tool").css("display", "none");
+                        show = false;
+                        window.location.href = (urls[names.indexOf(item)]);
+                        return item;
+                    }
+                });
+            }
+        }).error(function(data, b) { console.log("json解析错误，搜索功能暂不可用，请检查文章title，确保不含有换行等特殊符号"); });
+            
+                var posts = $("div.gallery-item");
+                if (posts.attr("data-url")){
+                posts.unbind();
+                posts.click(function(){
+                    var postUrl = $(this).attr("data-url")
+                    window.location.href=postUrl;
+                })
+                }
+
+            
+    });
+
+</script>
+
+
+    
+
+  </body>
+
+</html>
