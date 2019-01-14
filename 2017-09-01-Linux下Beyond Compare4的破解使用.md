@@ -1,14 +1,13 @@
 ---
-layout: post        # 指定模板
 title:  "Linux下Beyond Compare4的破解使用"
 date:   2017-09-01 18:37:06 +0800
-categories: Software   # 分类，首页显示,该项经常用于检测是否为post。请注意，每个文章仅支持一个分类。
-image:              # 图像，用于首页，若留空将以NoImage的形式显示, 暂不支持跨域图像。
-tags:  Linux Beyond-Compare-4  # 标签，用于tags页面，允许多个
-toc: true           # 确定是否显示toc目录，默认为不显示。
-comments: true      # 是否显示评论
-author:             # 若指定作者名，请开启多作者功能，否则将以默认作者显示。
+categories: Software
+author: Bill Kevin 
+mathjax: false 
+tags:
+  - Software 
 ---
+
 
 # 1.官网下载最新版 Beyond Compare 4 并安装
 
