@@ -1,5 +1,15 @@
-# Notes
-Markdown Notes
+---
+title:  "博文 Markdown 格式说明"
+date:   2019-01-16 10:42:06 +0800
+author: Bill Kevin 
+mathjax: true 
+categories: Test
+img: /images/demo0.jpg
+tags:
+  - Markdown
+---
+
+# Notes 格式说明
 
 记得在每一个Markdown文件开头添加一下模板：
 
