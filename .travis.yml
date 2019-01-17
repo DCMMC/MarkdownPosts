@@ -15,6 +15,4 @@ branches:
 script:
   - git config user.name "DCMMC"
   - git config user.email "xwt97294597@gmail.com"
-  - git clone --branch=develop --depth=1 https://github.com/DCMMC/DCMMC.github.io /tmp/DCMMC.github.io && cd /tmp/DCMMC.github.io && git submodule init && git submodule update && git remote rm origin && git remote add origin https://DCMMC:${Github_TOKEN}@github.com/DCMMC/DCMMC.github.io && cd ./source/_posts && git pull origin master && cd ../.. && git add --all . && git add -f ./source/_posts && git commit -m 'update _posts by Travis-CI && git push origin develop' && git push origin develop
-
-# 设置git提交名，邮箱；替换真实token到_config.yml文件，最后depoy部署
+  - git clone --branch=develop --depth=1 https://github.com/DCMMC/DCMMC.github.io /tmp/DCMMC.github.io && cd /tmp/DCMMC.github.io && git submodule init && git submodule update && git remote rm origin && git remote add origin https://DCMMC:${Github_TOKEN}@github.com/DCMMC/DCMMC.github.io && cd ./source/_posts && git pull origin master && cd ../.. && git add -A . && git add -A ./source/_posts && git commit -m 'update _posts by Travis-CI' && git push origin develop
