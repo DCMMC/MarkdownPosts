@@ -1,6 +1,6 @@
 ---
 title:  "Chromebook 折腾记"
-date:   2017-01-25 17:24:00
+date:   2019-01-25 17:24:00
 author: Bill Kevin 
 mathjax: false
 categories: Chromebook
@@ -66,9 +66,21 @@ Couldn't connect with Google services.
 
 ![play_store_cannot_connect.png](./assets/chromefy/play_store_cannot_connect.png)
 
-Issues:
+试了半天, 终于有一天不经意间发现了 chrome OS 的 shell 竟然有一个命令叫做 `android-sh`, 一看立马得到了转机:
 
-* 窗口化的应用因为 gpu 驱动问题有时候很不稳定，容易造成 crash，**全屏** 之后好很多了. 怀疑是安卓应用和 native 应用画面混成（composition）的时候驱动没实现或者不稳定.
+```bash
+$ sudo android-sh
+```
+
+竟然 Android 容器的 shell (默认还是 `root` 权限, 赞!), 这个命令就是类似于 `adb shell`. 既然进入了 Android 容器的 shell, 我们就可以找办法设置网络代理了. 因为 R70 上的安卓子系统的 Android 7.1.1, 在 Android 7+ 上, 我们可以直接使用下列命令进行设置网络 http 代理:
+
+```bash
+# settings put global http_proxy <http_address>:<port> 
+```
+
+> 方法类似于激活系统的时候, 在局域网另外一台电脑开启局域网代理.
+
+能够连上 GMS 之后, 就可以进入 `Play Store` 啦, 而且这次初始化之后, 就不需要科学上网就能打开安装好的 Android 软件了.
 
 运行 `Play Store` 效果图:
 
@@ -78,7 +90,11 @@ Issues:
 
 ![antutu.png](./assets/chromefy/antutu.png)
 
-### Root 和 `Xposed`
+Issues:
+
+* 窗口化的应用因为 gpu 驱动问题有时候很不稳定，容易造成 crash，**全屏** 之后好很多了. 怀疑是安卓应用和 native 应用画面混成（composition）的时候驱动没实现或者不稳定.
+
+### Root 和 Xposed
 
 ![supersu](./assets/chromefy/supersu.png)
 
@@ -90,6 +106,7 @@ Issues:
 * [android-on-chrome-os-rooting](https://nolirium.blogspot.com/2016/12/android-on-chrome-os-rooting-shell.html)
 * [installing-xposed-in-android-on-chrome](https://nolirium.blogspot.com/2018/04/installing-xposed-in-android-on-chrome.html)
 
+> 免 Root 使用 Xposed 可以试试 `VirtualXposed`
 
 # Crouton
 
