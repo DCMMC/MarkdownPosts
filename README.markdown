@@ -1,8 +1,8 @@
 ---
 title:  "博文 Markdown 格式说明"
 date:   2019-01-16 10:42:06 +0800
-author: Bill Kevin 
-mathjax: true 
+author: Bill Kevin
+mathjax: true
 categories: Test
 img: /images/demo0.jpg
 tags:

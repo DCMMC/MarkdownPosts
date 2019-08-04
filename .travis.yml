@@ -9,7 +9,7 @@ install:
 # 只在更新 develop 时执行
 branches:
   only:
-    - master 
+    - master
 
 # 执行清缓存，生成网页操作
 script:
