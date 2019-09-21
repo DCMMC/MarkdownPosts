@@ -3,7 +3,7 @@ title:  "Chromebook 折腾记"
 date:   2019-01-25 17:24:00
 author: Bill Kevin 
 mathjax: false
-categories: Chromebook
+categories: 杂谈
 tags:
   - Chromebook
 ---
