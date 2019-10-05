@@ -38,9 +38,9 @@ BitCoding 只取 payload 的前面一小部分比特位作为签名，并且将�
 
 > 公式跟原文表示有点出入
 
-假定训练集中对某一个应用共有 $K$ 个 flow，每一个 flow 的前 $n$ (e.g. 20) bits 就表示其签名，所以签名集 $A_{sig} = \{ \{f_{i,j} | 1 \le j \le n \} | 1 \le i \le K \}$. e.g. $\{11101, 11011, 11001\}$ 就是 3 个 flow 的签名集合。
+假定训练集中对某一个应用共有 $K$ 个 flow，每一个 flow 的前 $n$ (e.g. 20) bits 就表示其签名，所以签名集 $A\_{sig} = \\{ \\{f\_{i,j} | 1 \le j \le n \\} | 1 \le i \le K \\}$. e.g. $\\{11101, 11011, 11001\\}$ 就是 3 个 flow 的签名集合。
 
-> Tips: 原来 mathjax 里面连续两个 `\{` 要用空格隔开, 除了 `这种` 之外的地方星号都要转义
+> Tips: 原来 mathjax 里面连续两个 `\\{` 要用空格隔开并且要两边斜杠来转义, 除了 `这种` 之外的地方星号都要转义, `_` 要一遍斜杠转义
 
 应用的签名表示为 `s = [(1 if sum(A_sig[:, i] == K else 0 if sum(A_sig[:, i] == 0 else '*') for j in range(n)]` (类 Python 语法).
 
@@ -56,7 +56,7 @@ RLE 进一步转化为一个受限的有限计数自动机（Transition Constrai
 
 > `8W8Z3*3W` 其实就是 regexp `1{8,8}0{6,6}[01]{3,3}1{3,3}`
 
-形式化表示为：$\mathcal{M} = (Q, \Sigma, C, \sigma, q_0, F),$ w.r.t. $Q$ is finite set of input symbols, $\Sigma$ is finite set of input symbols, $C$ is finite set of counters, $q_0 \in Q$ is initial state, $F \subseteq Q$ is final state set, $\sigma$ is the set of transitions, 并且 $\sigma_i \in \sigma, \sigma_i = <q_i, q_j, c, \phi(c_i), Inc(c_j)>$, w.r.t. $q_i$ is current state, $q_j$ is next state, $c_i$ is current count, $\phi(c_i)$ is the (invariant) constraint on counter value $c_i$, $Inc(c_j)$ is a function that assign the $c_j$ to a new value.
+形式化表示为：$\mathcal{M} = (Q, \Sigma, C, \sigma, q_0, F),$ w.r.t. $Q$ is finite set of input symbols, $\Sigma$ is finite set of input symbols, $C$ is finite set of counters, $q_0 \in Q$ is initial state, $F \subseteq Q$ is final state set, $\sigma$ is the set of transitions, 并且 $\sigma_i \in \sigma, \sigma_i = (q_i, q_j, c, \phi(c_i), Inc(c_j))$, w.r.t. $q_i$ is current state, $q_j$ is next state, $c_i$ is current count, $\phi(c_i)$ is the (invariant) constraint on counter value $c_i$, $Inc(c_j)$ is a function that assign the $c_j$ to a new value.
 
 > 形式化表示看起来复杂，结合原文的 Fig. 4 很好理解，并且原文 Fig. 4 有一些错误。
 
