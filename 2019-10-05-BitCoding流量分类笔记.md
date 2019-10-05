@@ -15,7 +15,9 @@ tags:
 ### BitCoding
 
 Ref: [BitCoding: Network Traffic Classification
-Through Encoded Bit Level Signatures](http://doi.org/10.1109/TNET.2018.2868816) (CCF A，TON)
+Through Encoded Bit Level Signatures](http://doi.org/10.1109/TNET.2018.2868816) 
+
+> CCF A，TON
 
 #### Main Idea
 
@@ -36,13 +38,15 @@ BitCoding 只取 payload 的前面一小部分比特位作为签名，并且将�
 
 > 公式跟原文表示有点出入
 
-假定训练集中对某一个应用共有 $K$ 个 flow，每一个 flow 的前 $n$ (e.g. 20) bits 就表示其签名，所以签名集 $A_{sig} = \{\{f_{i,j} | 1 \le j \le n \} | 1 \le i \le K \}$. e.g. $\{11101, 11011, 11001\}$ 就是 3 个 flow 的签名集合。
+假定训练集中对某一个应用共有 $K$ 个 flow，每一个 flow 的前 $n$ (e.g. 20) bits 就表示其签名，所以签名集 $A_{sig} = \{ \{f_{i,j} | 1 \le j \le n \} | 1 \le i \le K \}$. e.g. $\{11101, 11011, 11001\}$ 就是 3 个 flow 的签名集合。
 
-应用的签名表示为 `s = [(1 if sum(A_sig[:, i] == K else 0 if sum(A_sig[:, i] == 0 else '\*') for j in range(n)]` (类 Python 语法).
+> Tips: 原来 mathjax 里面连续两个 `\{` 要用空格隔开, 除了 `这种` 之外的地方星号都要转义
+
+应用的签名表示为 `s = [(1 if sum(A_sig[:, i] == K else 0 if sum(A_sig[:, i] == 0 else '*') for j in range(n)]` (类 Python 语法).
 
 * Run-length Encoding
 
-上述应用签名长度为 $n$ 位三进制，使用 RLE 这种 naive 的无损压缩方式，具体地说，$n$ 个连续的 $1, 0, *$ 分别表示为 $nW, nZ, n*$.
+上述应用签名长度为 $n$ 位三进制，使用 RLE 这种 naive 的无损压缩方式，具体地说，$n$ 个连续的 $1, 0, \*$ 分别表示为 $nW, nZ, n\*$.
 
 * State Transition Machine Creation
 
@@ -61,20 +65,20 @@ RLE 进一步转化为一个受限的有限计数自动机（Transition Constrai
 虽然很短的签名能够减少计算的 overhead，但是这会带来不用应用的签名相同的问题（类似哈希冲突）。
 这可以通过增加 $n$ 的大小减少冲突（naive 的思路），原作者采用修改版的 Hamming Distance 来衡量两个签名之间的距离（Relaxed Hamming Distance)。
 
-> Hamming Distance 计算相同长度的字符串中不同的位数，而 $*$ 表示为 0 或 1，所以 Relaxed Hamming Distance 位于含有 $*$ 的位不算作不同。
+> Hamming Distance 计算相同长度的字符串中不同的位数，而 $\*$ 表示为 0 或 1，所以 Relaxed Hamming Distance 位于含有 $\*$ 的位不算作不同。
 
 所以只需要对 Hamming distance 太小的应用的签名长度增加便可以提高分类精度。
 
 #### Q&A
 
-* 1. 包头这个方法考虑过吗：
+1. 包头这个方法考虑过吗：
 
 > 原文只是利用 header 来讲应用的 traffic flow 提取出来，i.e. Bi-directional flow reconstruction 部分。而 TCCA 的创建不使用 header，而且其实 header （Ethernet/IP层) 部分大部分都是协议版本，Port，IP，MAC 之类的固定信息，这些信息在应用层要么都是一样的要么我们的论文预处理的时候会屏蔽掉它们。
 
-* 2. K 越大，相同位置得到 $*$ 的概率也有越大，导致 TCCA 自由一个节点，那么所有流都会走到终止状态？
+2. K 越大，相同位置得到 $\*$ 的概率也有越大，导致 TCCA 自由一个节点，那么所有流都会走到终止状态？
 
 > 作者采用 **Relaxed** Hamming Distance 并且增长签名长度来避免这种情况。
 
-* 3. RHD 具体如何解决冲突问题？
+3. RHD 具体如何解决冲突问题？
 
 > 前面有讲解。
