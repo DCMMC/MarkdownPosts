@@ -57,7 +57,7 @@ menuentry "local image A verification" {
 
 > 安装 Crouton 容器的 xorg target 需要从 google 服务器(被 gfw ban 了)下载 adhd.tar.gz, 所以如果没有解决代理需要手动下载并更改容器里面的 prepare.sh 相关内容.
 
-Crouton` 就是一个 `chroot` + 自己实现了一个 `xorg server` 可以把 GUI 应用显示在 chrome tab 中的 `xiwi` + 可以运行在 freon 的 xorg (frecon 是 chromium project 做的一个 tty 终端模拟器, crouton 的 xorg 可以运行整个 desktop environment 在 tty2, 自带 gpu 加速, 甚至感觉比 chrome os 的 DE 还流畅hhh) + 自动挂载一些目录（最重要的 /var/run 用于共享 host 的 dbus 之类的东西, tmp，~/Downloads...) + 剪贴板共享 + Audio （CARS）等等
+`Crouton` 就是一个 `chroot` + 自己实现了一个 `xorg server` 可以把 GUI 应用显示在 chrome tab 中的 `xiwi` + 可以运行在 `freon` 的 xorg ( `frecon` 是 chromium project 做的一个 tty 终端模拟器, crouton 的 xorg 可以运行整个 desktop environment 在 tty2, 自带 gpu 加速, 甚至感觉比 chrome os 的 DE 还流畅hhh) + 自动挂载一些目录（最重要的 /var/run 用于共享 host 的 dbus 之类的东西, tmp，~/Downloads...) + 剪贴板共享 + Audio （CARS）等等
 
 在上一篇博文中提到过 crouton 的缺陷:
 
@@ -79,7 +79,7 @@ kvm 因为 crostini 需要用到, 所以默认就有, 只不过有 `/dev/kvm` �
 sudo xiwi qemu-system-x86_64 -boot d -enable-kvm -cdrom ./archlinux-2019.12.01-x86_64.iso -m 1024 -cpu kvm64 -smp 4
 ```
 
-## `linux-header` 及 VirtualBox
+## linux-header 及 VirtualBox
 
 > Chromium OS 因为稍微有点小众, 许多资料其实都已经过时了.
 
