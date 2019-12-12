@@ -1,6 +1,6 @@
 ---
 title:  "Chromebook 折腾记之二"
-date:   2019-12-11 24:00:00
+date:   2019-12-12 24:00:00
 author: Bill Kevin 
 mathjax: false
 categories: 杂谈
@@ -40,18 +40,18 @@ Intel Core i7-6500U CPU @ 3.1GHz
 Chromebook 使用的是 coreboot, 并且开机加载的是 kernel blob (Partition 2 或 4 之类的, kernel blob 里面包含一个有 bootloader, kernel config 和 kernel image 的一个 device tree, 并且 blob 头会做加密校验, 内容当然也是加密的) 而不是 grub, 所以到了我这台 Windows 
 笔记本上只能用 grub 了.
 
-而且我这默认 grub 的配置进不去系统, 所以需要做一下修改 (`ESP:/EFI/ChromeOS/grub.cfg`):
+而且我这默认 grub 的配置进不去系统, 所以需要做一下修改 (`ESP:/EFI/ChromeOS/grub.cfg` 或 `ESP:/EFI/Boot/grub.cfg`):
 
 ```
 menuentry "local image A verification" {
   insmod ext2
   insmod part_gpt
   set root=(hd0,gpt3)
-  linux /boot/vmlinuz-4.14.120 init=/sbin/init boot=local rootwait ro noresume noswap loglevel=7 noinitrd console=  i915.modeset=1 dm_verity.dev_wait=0 cros_legacy cros_debug       root=/dev/sda3
+  linux /boot/vmlinuz-4.14.120 init=/sbin/init boot=local rootwait ro noresume noswap loglevel=7 noinitrd console=  i915.modeset=1 dm_verity.dev_wait=0 cros_legacy cros_debug loadpin.enabled=0      root=/dev/sda3
 }
 ```
 
-> /dev/sda3 对应 ROOT-A 分区
+> /dev/sda3 对应 ROOT-A 分区, 且内核参数与 Chrome OS 默认的有许多出入之处.
 
 # Crouton
 
@@ -78,6 +78,14 @@ kvm 因为 crostini 需要用到, 所以默认就有, 只不过有 `/dev/kvm` �
 ```
 sudo xiwi qemu-system-x86_64 -boot d -enable-kvm -cdrom ./archlinux-2019.12.01-x86_64.iso -m 1024 -cpu kvm64 -smp 4
 ```
+
+## rkt 容器的使用
+
+```bash
+sudo rkt run --no-overlay=true --insecure-options=image docker://alpine --net=host --interactive
+```
+
+> 主要是网卡只能用 `host`, `overlay` 也似乎不支持.
 
 ## linux-header 及 VirtualBox
 
@@ -126,11 +134,19 @@ fi
 exit 0
 ```
 
-所以编译好 `linux-image.*.deb` 和  `linux-header.*.deb` 后先不要马上安装, 前卸载掉之前的 /lib/modules.
+Oracle VBox 在 crouton 退出时依然运行着内核模块, 需要手动卸载:
+
+```bash
+sudo /sbin/rmmod vboxpci && sudo rmmod vboxnetadp && sudo rmmod vboxnetflt && sudo rmmod vboxdrv
+```
+
+所以编译好 `linux-image.*.deb` 和  `linux-header.*.deb` 后先不要马上安装, 先确保卸载掉之前 bind mount 的 /lib/modules.
 
 VirtualBox 效果图:
 
 ![vbox.png](./assets/chromefy/vbox.png)
+
+> 值得注意的是我发现也许是 `crostini` 与同样需要使用 `kvm` 的 Oracle VBox 冲突, `crostini` 所在的 `termina` 如果正在运行的话, Oracle VBox 将无法启动. 需要使用 `vmc stop termina` (在 `crosh` 中) 停止 `termina`, 而有趣的是 `qemu with kvm` 并不会与 `termina` 冲突.
 
 ## ubuntu 16.04 (xenial) 折腾记
 
@@ -170,6 +186,8 @@ Gnome 3.18 还是那个保留了 status icon bar 的版本, 真香啊, 而且没
 
 因为我现在的 Chrome OS 的版本是 R75, 到了 R77 才支持 gpu 加速, 而 R77 的 ARC 的网络代理出问题了, 而 R78 的恢复镜像当时还没出, 所以有空升级到 R78 去.
 
+> 当时第一次进入 `Chromium OS` 的 tty 终端的时候, 发现可以用 `journal` 还以为 init 换成了 `systemd`, 结果白高兴一场, 依然是 `upstart`. 不过 `Chromium OS` 现在 (至少 R75 开始)的 tty (`frecon`) 默认是大字体了, 看着很舒服, 比 Arch Linux 默认 tty 字体大小舒服多了哈哈哈.
+
 发现几个值得一提的事:
 
 * Chromium project 为了增强安全性和隔离性, 所以使用 crostini 跑在 kvm (他们的 wiki 说 overhead 很小) 里面的最小化 linux 环境里面再跑 lxc 容器, 其中跑的 linux 内核是不同于 chrome os 的, 甚至更加注重安全的版本(hardended 版本).
@@ -179,3 +197,15 @@ Gnome 3.18 还是那个保留了 status icon bar 的版本, 真香啊, 而且没
 * Chrome OS 默认 iptable 规则比较严格, 局域网想访问 crostini 里面的 docker 运行的服务需要做一下端口转发 (把 host 的流量转发到容器) 并且修改 iptable 规则 (`sudo iptables -I OUTPUT -o wlan0 -j ACCEPT && sudo iptables -I INPUT -i wlan0 -j ACCEPT`).
 
 > In a nutshell, sommelier 真香!
+
+在 crostini 中运行完整桌面可以用 `x11docker` (配合 `weston`):
+
+先输入`weston` 进入其桌面的终端, 输入 `x11docker --desktop --gpu --user=root --init=systemd --fullscreen x11docker/gnome`
+
+> 在没有显卡加速的 R75 上略卡, 可以试试以后用 `chromebrew` 在 `frecon` 中使用  `weston` 来远程渲染 `crostini` 中的 `x11docker`.
+
+# Changelog
+
+## 2019-12-12
+
+加入 VBox 和 Termina 冲突有关的内容, 以及 `rkt` 和 `x11docker`.
