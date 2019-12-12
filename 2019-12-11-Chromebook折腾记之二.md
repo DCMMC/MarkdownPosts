@@ -43,7 +43,7 @@ Chromebook 使用的是 coreboot, 并且开机加载的是 kernel blob (Partitio
 而且我这默认 grub 的配置进不去系统, 所以需要做一下修改 (`ESP:/EFI/ChromeOS/grub.cfg` 或 `ESP:/EFI/Boot/grub.cfg`):
 
 ```
-menuentry "local image A verification" {
+menuentry "Chrome OS" {
   insmod ext2
   insmod part_gpt
   set root=(hd0,gpt3)
