@@ -37,8 +37,7 @@ Intel Core i7-6500U CPU @ 3.1GHz
 
 # Grub 启动问题
 
-Chromebook 使用的是 coreboot, 并且开机加载的是 kernel blob (Partition 2 或 4 之类的, kernel blob 里面包含一个有 bootloader, kernel config 和 kernel image 的一个 device tree, 并且 blob 头会做加密校验, 内容当然也是加密的) 而不是 grub, 所以到了我这台 Windows 
-笔记本上只能用 grub 了.
+Chromebook 使用的是 coreboot, 并且开机加载的是 kernel blob (Partition 2 或 4 之类的, kernel blob 里面包含一个有 bootloader, kernel config 和 kernel image 的一个 device tree, 并且 blob 头会做加密校验, 内容当然也是加密的) 而不是 grub, 所以到了我这台 Windows 笔记本上只能用 grub 了.
 
 而且我这默认 grub 的配置进不去系统, 所以需要做一下修改 (`ESP:/EFI/ChromeOS/grub.cfg` 或 `ESP:/EFI/Boot/grub.cfg`):
 
