@@ -232,6 +232,8 @@ Environment="SOMMELIER_ACCELERATORS=<Alt>minus,<Alt>equal"
 EOF
 ```
 
+> 然而 `Alt+Tab` 还是默认被 chrome OS 的 Ash WM 劫持的，（似乎）无法通过上述配置文件修改。
+
 测试 `i3wm` 的时候还是发现 `meta+1` 这样的组合键有问题，用 `xev` 测试发现 `meat+1` 识别成了 `super_L + F1`, 研究了一会儿最后决定直接把 `$mod` 改成了 `Alt` 一劳永逸hhhh。
 
 现在还有点小问题，`F3` 全屏之后 `i3wm` 的大小还是原来的大小。
@@ -243,6 +245,10 @@ EOF
 >  不管是 `crostini` 还是 `crouton` 都可以用本小节方法在窗口中运行新的 `X server`。
 
 # Changelog
+
+## 2019-12-20
+
+加入使用 `Xephyr` 运行 `i3wm` 有关内容。
 
 ## 2019-12-12
 
