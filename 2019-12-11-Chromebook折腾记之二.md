@@ -203,6 +203,45 @@ Gnome 3.18 还是那个保留了 status icon bar 的版本, 真香啊, 而且没
 
 > 在没有显卡加速的 R75 上略卡, 可以试试以后用 `chromebrew` 在 `frecon` 中使用  `weston` 来远程渲染 `crostini` 中的 `x11docker`.
 
+## 在窗口里运行 Window Manager 或 Desktop Environment
+
+一直有想法在运行 chrome OS 桌面的同时运行其他桌面，X11docker 是个选择不过 `weston` 效率不是很高而且 `docker` 可以理解为易失性存储器。
+一次逛 Reddit 无意间发现了使用 `Xephyr` （a nested X server that runs as an X application）的 [帖子](https://www.reddit.com/r/Crostini/comments/ean9du/running_a_window_manager_i3wm_on_stock_chrome_os)，折腾了一下发现效果相当好！
+
+```bash
+alias starti3='unset DBUS_SESSION_BUS_ADDRESS && unset XDG_RUNTIME_DIR && Xephyr -br -ac -noreset -screen 1920x1080 -dpi 150 -resizeable :2 >/dev/null 2>&1 &; sleep 1s && DISPLAY=:2 i3 >/dev/null 2>&1 &'
+alias exiti3='pkill Xephyr && pkill i3'
+```
+
+> 主要需要注意的就是需要创建并使用新的 D-BUS session，否则在 `i3wm` 中打开的窗口不会运行在 `i3wm` 里面而是跑出去了，因为它们依赖 DBUS，错误的使用原来的 DBUS 回话打开了窗口。所以需要在新回话之前 unset 掉所有 DBUS 有关的环境变量。
+
+其实是在 `i3wm` 中因为缺少 DBUS 有关环境变量，会导致依赖它们的程序运行不正常（e.g. 搜狗拼音），所以需要 `export $(dbus-launch)` （可以直接放到 `~/.config/i3/config` 里面）导出一下。
+
+其次，我发现 `crostini` 中的 `sommelier` 会劫持一部分的快捷键来匹配 chrome OS 的行为，比如 `super_L` (a.k.a. `meta`) 键，Alt+`-` (最小化窗口)，Alt+`+` （最大化窗口），Alt+`[` （左半分屏），Alt+`]` (左半分屏)，etc. 所以要想在 `i3wm` 中使用 `Alt+1` 这样的快捷键，需要修改一下 `sommelier` 配置（[参考]（https://old.reddit.com/r/Crostini/wiki/enable-chrome-shortcuts-in-linux-apps)：
+
+```bash
+mkdir -p ~/.config/systemd/user/sommelier@.service.d/
+cat <<EOF > ~/.config/systemd/user/sommelier@.service.d/cros-sommelier-override.conf
+[Service]
+Environment="SOMMELIER_ACCELERATORS=<Alt>minus,<Alt>equal"
+EOF
+mkdir -p ~/.config/systemd/user/sommelier-x@.service.d/
+cat <<EOF > ~/.config/systemd/user/sommelier-x@.service.d/cros-sommelier-x-override.conf
+[Service]
+Environment="SOMMELIER_ACCELERATORS=<Alt>minus,<Alt>equal"
+EOF
+```
+
+测试 `i3wm` 的时候还是发现 `meta+1` 这样的组合键有问题，用 `xev` 测试发现 `meat+1` 识别成了 `super_L + F1`, 研究了一会儿最后决定直接把 `$mod` 改成了 `Alt` 一劳永逸hhhh。
+
+现在还有点小问题，`F3` 全屏之后 `i3wm` 的大小还是原来的大小。
+
+全家福：
+
+![i3wm](./assets/chromefy/Xephyr_i3wm.png)
+
+>  不管是 `crostini` 还是 `crouton` 都可以用本小节方法在窗口中运行新的 `X server`。
+
 # Changelog
 
 ## 2019-12-12
