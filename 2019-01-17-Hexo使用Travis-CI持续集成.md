@@ -1,8 +1,8 @@
 ---
 title:  "Hexo 使用 Travis-CI 持续集成"
 date:   2019-01-17 13:42
-author: Bill Kevin 
-mathjax: false 
+author: Bill Kevin
+mathjax: false
 categories: Blog
 img: /images/demo0.jpg
 tags:

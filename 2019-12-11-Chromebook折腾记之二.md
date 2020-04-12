@@ -1,7 +1,7 @@
 ---
 title:  "Chromebook 折腾记之二"
 date:   2019-12-12 24:00:00
-author: Bill Kevin 
+author: Bill Kevin
 mathjax: false
 categories: 杂谈
 tags:
@@ -74,7 +74,7 @@ kvm 因为 crostini 需要用到, 所以默认就有, 只不过有 `/dev/kvm` �
 
 测试下 kvm:
 
-```
+```bash
 sudo xiwi qemu-system-x86_64 -boot d -enable-kvm -cdrom ./archlinux-2019.12.01-x86_64.iso -m 1024 -cpu kvm64 -smp 4
 ```
 
@@ -100,7 +100,7 @@ sudo rkt run --no-overlay=true --insecure-options=image docker://alpine --net=ho
 
 使用 [release-R76-12239.B-chromeos-4.14](https://chromium.googlesource.com/chromiumos/third_party/kernel/+/refs/heads/release-R76-12239.B-chromeos-4.14) 这一个 repo.
 
-```
+```bash
 # repo 根目录下
 ./chromeos/scripts/prepareconfig chromeos-intel-pineview # 似乎可以不需要
 sudo modprobe configs && zless /proc/config.gz > $KERNEL_REPO/.config
@@ -111,7 +111,7 @@ sudo make-kpkg --rootcmd fakeroot kernel_image kernel_headers
 
 在 Crouton 容器中修改 rc.local 使之启动的时候解除 /lib/modules 的挂载, 以免容器内对内核模块的操作影响 host:
 
-```
+```bash
 #!/bin/sh -e
 #
 # rc.local
@@ -169,13 +169,13 @@ Gnome 3.18 还是那个保留了 status icon bar 的版本, 真香啊, 而且没
 
   * Gnome-software high cpu usage: 文件权限问题`sudo chown -R <USER> /home/<USER>/.cache/dconf`
 
-    ```bash
-    tracker daemon -t
-    cd ~/.config/autostart
-    cp -v /etc/xdg/autostart/tracker-*.desktop ./
-    for FILE in tracker-*.desktop; do echo Hidden=true >> $FILE; done
-    rm -rf ~/.cache/tracker ~/.local/share/tracker
-    ```
+```bash
+tracker daemon -t
+cd ~/.config/autostart
+cp -v /etc/xdg/autostart/tracker-*.desktop ./
+for FILE in tracker-*.desktop; do echo Hidden=true >> $FILE; done
+rm -rf ~/.cache/tracker ~/.local/share/tracker
+```
 
 > 反映出 gnome 写出来的程序真的很多 sucks 的...
 
@@ -244,6 +244,16 @@ EOF
 
 >  不管是 `crostini` 还是 `crouton` 都可以用本小节方法在窗口中运行新的 `X server`。
 
+## 无痛 A/B 升级 Chrome OS
+
+主要使用: [chrome_os_updater](https://github.com/DCMMC/chrome_os_updater)
+
+前提是需要 `EFI-SYSTEM`, `ROOT-A`, `ROOT-B` 三个 partlabel 的分区.
+
+可以使用在 Chrome OS 上升级系统到另外一下分区, 同时修改 grub.cfg.
+
+原 repo 直接覆盖了 EFI 分区, 这样对于多系统有影响, 所以 fork 下来略微修改了一下.
+
 # Changelog
 
 ## 2019-12-20
@@ -253,3 +263,7 @@ EOF
 ## 2019-12-12
 
 加入 VBox 和 Termina 冲突有关的内容, 以及 `rkt` 和 `x11docker`.
+
+## 2020-04-12
+
+加入无痛升级的脚本

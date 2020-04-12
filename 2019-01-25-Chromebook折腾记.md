@@ -1,7 +1,7 @@
 ---
 title:  "Chromebook 折腾记"
 date:   2019-01-25 17:24:00
-author: Bill Kevin 
+author: Bill Kevin
 mathjax: false
 categories: 杂谈
 tags:
@@ -75,7 +75,7 @@ $ sudo android-sh
 竟然 Android 容器的 shell (默认还是 `root` 权限, 赞!), 这个命令就是类似于 `adb shell`. 既然进入了 Android 容器的 shell, 我们就可以找办法设置网络代理了. 因为 R70 上的安卓子系统的 Android 7.1.1, 在 Android 7+ 上, 我们可以直接使用下列命令进行设置网络 http 代理:
 
 ```bash
-# settings put global http_proxy <http_address>:<port> 
+# settings put global http_proxy <http_address>:<port>
 ```
 
 > 方法类似于激活系统的时候, 在局域网另外一台电脑开启局域网代理.
@@ -98,7 +98,7 @@ Issues:
 
 ![supersu](./assets/chromefy/supersu.png)
 
-原理也挺简单的, 主要就是挂载一下 `system.raw.img` 镜像然后写入一个 `su`, 然后更改一下 `arc++` 的挂载点配置, 做一个链接之类的. 
+原理也挺简单的, 主要就是挂载一下 `system.raw.img` 镜像然后写入一个 `su`, 然后更改一下 `arc++` 的挂载点配置, 做一个链接之类的.
 
 可以参考这里:
 

@@ -1,9 +1,9 @@
 ---
 title:  "BitCoding流量分类笔记"
 date:   2019-10-05 21:00:00
-author: Bill Kevin 
+author: Bill Kevin
 mathjax: true
-categories: 论文 
+categories: 论文
 tags:
   - 论文
   - 网络流量分类
@@ -15,7 +15,7 @@ tags:
 ### BitCoding
 
 Ref: [BitCoding: Network Traffic Classification
-Through Encoded Bit Level Signatures](http://doi.org/10.1109/TNET.2018.2868816) 
+Through Encoded Bit Level Signatures](http://doi.org/10.1109/TNET.2018.2868816)
 
 > CCF A，TON
 
@@ -127,7 +127,7 @@ bursts 的统计特征包括 burst size (包数量) 和 burst length (burst 中�
 
 bursts 统计特征 和  time series 同样也可以使用类似 packets lengths 的统计信息, 包含两个方向: ingress, egress, bi-direction. ( burst 只用了前两种方向: $2 \times 2 \times 18 = 72$, time 包含三个方向: $3 \times 18 = 54$ )
 
-> merging features 中 packet length 还包括三个方向的包的总数作为 feature 
+> merging features 中 packet length 还包括三个方向的包的总数作为 feature
 
 > 实验结果: packet length: 79%, burst: 82%, time series: 78%, 三者简单合并 (merge): 85%.
 
