@@ -254,6 +254,22 @@ EOF
 
 原 repo 直接覆盖了 EFI 分区, 这样对于多系统有影响, 所以 fork 下来略微修改了一下.
 
+## fcitx5 使用
+
+在 wayland 原生 gtk 应用中使用 `fcitx5` 会出现无法显示候选列表框的问题，这是因为没有 wayland IM module 或者应用不兼容输入法，在 kde 或者 gnome 中可以使用 `kimpanel`。
+
+而 crostini 并没有 DE，总之很多坑，目前并没有完美的解决方法。
+
+所以只能为这些应用单独开一个 X 给他们：
+
+```bash
+sommelier -X <executable file>
+```
+
+对于 sublime, 发现用 sommelier -X 无法启动，不过加入 debug 参数 `sommelier -X subl --debug` 就可以。
+
+不过使用时整体渲染感觉会卡一点。
+
 # Changelog
 
 ## 2019-12-20
@@ -267,3 +283,7 @@ EOF
 ## 2020-04-12
 
 加入无痛升级的脚本
+
+## 2020-05-17
+
+加入 fcitx5 使用。
